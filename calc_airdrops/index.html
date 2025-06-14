@@ -1,0 +1,2794 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intus Cripto - Calculadora de Valor por Ponto em Airdrops</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .min-h-screen { min-height: 100vh; }
+        
+        .p-1 { padding: 0.25rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+        
+        .m-0 { margin: 0; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mb-16 { margin-bottom: 4rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mr-1 { margin-right: 0.25rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mr-3 { margin-right: 0.75rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        
+        .space-x-1 > * + * { margin-left: 0.25rem; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .space-x-3 > * + * { margin-left: 0.75rem; }
+        .space-x-4 > * + * { margin-left: 1rem; }
+        .space-x-6 > * + * { margin-left: 1.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .flex-shrink-0 { flex-shrink: 0; }
+        
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+        
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        
+        .opacity-75 { opacity: 0.75; }
+        .opacity-80 { opacity: 0.8; }
+        .opacity-90 { opacity: 0.9; }
+        
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        
+        .border { border-width: 1px; }
+        .border-2 { border-width: 2px; }
+        .border-t { border-top-width: 1px; }
+        
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        .max-w-7xl { max-width: 80rem; }
+        
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        
+        .h-8 { height: 2rem; }
+        .h-12 { height: 3rem; }
+        .h-16 { height: 4rem; }
+        .h-20 { height: 5rem; }
+        
+        .w-4 { width: 1rem; }
+        .w-8 { width: 2rem; }
+        .w-12 { width: 3rem; }
+        .w-20 { width: 5rem; }
+        
+        .top-0 { top: 0; }
+        .top-2 { top: 0.5rem; }
+        .left-0 { left: 0; }
+        .right-0 { right: 0; }
+        .right-2 { right: 0.5rem; }
+        
+        .z-10 { z-index: 10; }
+        .z-1000 { z-index: 1000; }
+        
+        .overflow-hidden { overflow: hidden; }
+        .overflow-x-auto { overflow-x: auto; }
+        
+        .cursor-pointer { cursor: pointer; }
+        
+        .transition-all { transition: all; }
+        .duration-300 { transition-duration: 300ms; }
+        
+        .hover\:bg-opacity-20:hover { background-opacity: 0.2; }
+        .hover\:text-cyan-300:hover { color: #67e8f9; }
+        .hover\:text-cyan-400:hover { color: #22d3ee; }
+        .hover\:scale-105:hover { transform: scale(1.05); }
+        
+        .focus\:outline-none:focus { outline: none; }
+        .focus\:ring-2:focus { box-shadow: 0 0 0 2px; }
+        .focus\:ring-cyan-500:focus { box-shadow: 0 0 0 2px #06b6d4; }
+        .focus\:border-cyan-500:focus { border-color: #06b6d4; }
+        
+        /* Colors */
+        .text-white { color: #ffffff; }
+        .text-cyan-200 { color: #a5f3fc; }
+        .text-cyan-300 { color: #67e8f9; }
+        .text-cyan-400 { color: #22d3ee; }
+        .text-red-500 { color: #ef4444; }
+        .text-green-300 { color: #86efac; }
+        .text-green-400 { color: #4ade80; }
+        .text-gray-300 { color: #d1d5db; }
+        .text-gray-400 { color: #9ca3af; }
+        .text-gray-500 { color: #6b7280; }
+        .text-yellow-400 { color: #facc15; }
+        .text-orange-300 { color: #fdba74; }
+        
+        .bg-white { background-color: #ffffff; }
+        .bg-black { background-color: #000000; }
+        .bg-gray-500 { background-color: #6b7280; }
+        .bg-gray-800 { background-color: #1f2937; }
+        .bg-green-500 { background-color: #10b981; }
+        .bg-cyan-400 { background-color: #22d3ee; }
+        .bg-cyan-500 { background-color: #06b6d4; }
+        .bg-orange-500 { background-color: #f97316; }
+        .bg-opacity-20 { background-opacity: 0.2; }
+        .bg-opacity-70 { background-opacity: 0.7; }
+        
+        .border-gray-300 { border-color: #d1d5db; }
+        .border-cyan-400 { border-color: #22d3ee; }
+        .border-cyan-500 { border-color: #06b6d4; }
+        .border-green-500 { border-color: #10b981; }
+        .border-orange-500 { border-color: #f97316; }
+        .border-opacity-30 { border-opacity: 0.3; }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        }
+        
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        
+        @media (min-width: 1024px) {
+            .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0a0f1c 0%, #050810 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Holographic background grid */
+        .holo-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Logo specific styles */
+        .logo-container:hover .logo-img {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* SVG specific styling */
+        .logo-img[src$=".svg"] {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Placeholder effect when logo is not loaded */
+        .logo-img:not([src]),
+        .logo-img[src=""],
+        .logo-img[src*="sua-logo-aqui"] {
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1)) !important;
+            border: 2px solid rgba(0, 255, 255, 0.4) !important;
+        }
+
+        .back-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Mouse follower effect */
+        .mouse-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, rgba(0, 153, 255, 0.05) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 0.1s ease;
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 20px;
+        }
+        
+        .glass-card {
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+        }
+        
+        .project-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+        
+        .value-highlight {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #0a0f1c;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.125rem;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .scenario-card {
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+        }
+        
+        .scenario-conservative {
+            background: linear-gradient(135deg, #0099ff, #00ffff);
+            color: #0a0f1c;
+        }
+        
+        .scenario-approximate {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #0a0f1c;
+        }
+        
+        input, select {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #ffffff;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        select option {
+            background: #0a0f1c;
+            color: #ffffff;
+            border: none;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.15);
+        }
+        
+        button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .intus-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+        
+        .video-section {
+            background: rgba(0, 20, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .video-carousel {
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #00ffff #2d2d2d;
+        }
+        
+        .video-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .video-carousel::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .video-carousel::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #00ffff, #0099ff);
+            border-radius: 4px;
+        }
+        
+        .video-card {
+            min-width: 320px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .video-card {
+                min-width: 280px;
+            }
+        }
+        
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #0a0f1c;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+            text-decoration: none;
+        }
+        
+        .play-button:visited {
+            color: #0a0f1c;
+        }
+        
+        .play-button:hover {
+            background: #00ffff;
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.6);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-icon:visited {
+            color: white;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.3);
+        }
+        
+        .social-youtube {
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+        }
+        
+        .social-twitter {
+            background: linear-gradient(135deg, #1DA1F2, #0d8bd8);
+        }
+        
+        .social-discord {
+            background: linear-gradient(135deg, #5865F2, #4752c4);
+        }
+        
+        .social-instagram {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+        }
+        
+        .social-tiktok {
+            background: linear-gradient(135deg, #000000, #333333);
+        }
+        
+        .social-website {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+        }
+        
+        .social-newsletter {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Welcome section enhancement */
+        #welcomeSection {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            accent-color: #00ffff;
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+            z-index: 1000;
+            min-width: 120px;
+            margin-top: 4px;
+        }
+        
+        .language-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+        }
+        
+        .language-option:hover {
+            background: rgba(0, 255, 255, 0.15);
+        }
+        
+        /* Airdrop Simulator Styles */
+        .roi-simulator {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ffff, #0099ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #ffffff;
+        }
+
+        .roi-simulator h3 {
+            color: #00ffff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .roi-simulator input {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .roi-simulator input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+            background: rgba(0, 255, 255, 0.1);
+        }
+        
+        .roi-simulator button {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #0a0f1c;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .roi-simulator button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+        
+        .roi-results {
+            display: none;
+            margin-top: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .roi-results.show {
+            display: grid;
+        }
+        
+        .roi-result-card {
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+        }
+        
+        .roi-result-conservative {
+            border-left: 4px solid #0099ff;
+        }
+        
+        .roi-result-approximate {
+            border-left: 4px solid #00ffff;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 255, 255, 0.05) !important;
+            border-top: 1px solid rgba(0, 255, 255, 0.2) !important;
+            box-shadow: 0 -4px 20px rgba(0, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .roi-results {
+                grid-template-columns: 1fr;
+            }
+
+            .mouse-glow {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .video-card {
+                min-width: 280px;
+            }
+            
+            .social-icons {
+                gap: 0.75rem;
+            }
+            
+            .social-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+        }
+        
+        .pt-4 { padding-top: 1rem; }
+        .pb-4 { padding-bottom: 1rem; }
+        .line-clamp-2 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .text-decoration-none { text-decoration: none; }
+        
+        .back-button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #67e8f9;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+            color: #22d3ee;
+        }
+        
+        /* Project Search Dropdown Styles */
+        #projectDropdown {
+            background: #1f2937 !important;
+            border: 1px solid #374151 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+            z-index: 50 !important;
+            max-height: 150px !important;
+            overflow-y: auto !important;
+            position: absolute !important;
+        }
+        
+        /* Estilo da barra de rolagem */
+        #projectDropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #projectDropdown::-webkit-scrollbar-track {
+            background: #374151;
+            border-radius: 3px;
+        }
+        
+        #projectDropdown::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 3px;
+        }
+        
+        #projectDropdown::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        
+        .project-dropdown-item {
+            transition: all 0.2s ease;
+            padding: 8px 12px !important;
+            min-height: 50px;
+        }
+        
+        .project-dropdown-item:hover {
+            background: #374151 !important;
+        }
+        
+        .project-dropdown-item:last-child {
+            border-bottom: none !important;
+        }
+        
+        /* Placeholder styling for inputs */
+        input::placeholder {
+            color: #6b7280;
+            opacity: 0.6;
+            font-style: italic;
+        }
+        
+        /* Select placeholder styling to match input placeholders exactly */
+        
+        /* Status Badge Styles - Beautiful styling for project status */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-badge.status-active {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.25));
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            text-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-badge.status-maintenance {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.25));
+            color: #fde047;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+        }
+        
+        .status-badge.status-inactive {
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.15), rgba(75, 85, 99, 0.25));
+            color: #d1d5db;
+            border: 1px solid rgba(107, 114, 128, 0.4);
+        }
+        
+        .status-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        select option[disabled] {
+            color: #6b7280 !important;
+            opacity: 0.6 !important;
+            font-style: italic !important;
+            display: none !important; /* Hide the placeholder option from dropdown */
+        }
+        
+        /* When select shows placeholder (invalid state) - make it look like input placeholder */
+        select:invalid {
+            color: #6b7280 !important;
+            opacity: 0.6 !important;
+            font-style: italic !important;
+        }
+        
+        /* When select has valid option selected */
+        select:valid {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            font-style: normal !important;
+        }
+        
+        /* Specific styling for select elements to match input placeholder exactly */
+        select {
+            font-style: normal;
+            color: #ffffff;
+        }
+        
+        /* Override for when showing placeholder text */
+        select:invalid {
+            font-style: italic !important;
+            color: #6b7280 !important;
+            opacity: 0.6 !important;
+        }
+        
+        /* Make sure the placeholder option text is styled correctly */
+        select option:first-child[disabled] {
+            color: #6b7280 !important;
+            opacity: 0.6 !important;
+            font-style: italic !important;
+            display: none !important; /* Hide from dropdown menu */
+        }
+        
+        /* Normal styling for dropdown options (not italic) */
+        select option:not([disabled]) {
+            font-style: normal !important;
+            color: #ffffff !important;
+        }
+        
+        /* Force select to show placeholder styling when no valid option is selected */
+        select[value=""], select:not([value]) {
+            color: #6b7280 !important;
+            opacity: 0.6 !important;
+            font-style: italic !important;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="holo-grid"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+    
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="../index.html" class="back-btn">
+            <span>←</span> Voltar ao Menu
+        </a>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <span id="userName">Usuário Intus</span>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="min-h-screen transition-all duration-300">
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Welcome Section -->
+            <div id="welcomeSection" class="mb-8">
+                <!-- Header Section -->
+                <div class="text-center mb-6 p-4 rounded-2xl text-white" style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1)); border: 1px solid rgba(0, 255, 255, 0.2); box-shadow: 0 8px 30px rgba(0, 255, 255, 0.2);">
+                    <div class="mb-4">
+                        <div class="logo-container mx-auto mb-3" style="width: 60px; height: 60px; position: relative;">
+                            <div class="logo-ring" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid transparent; border-radius: 50%; background: linear-gradient(45deg, #00ffff, #0099ff, #6600ff) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: subtract; animation: logoRotate 10s linear infinite;"></div>
+                            <img src="../intus_logo.svg" alt="Intus Cripto Logo" class="logo-img" style="width: 40px; height: 40px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 255, 0.3); object-fit: cover;">
+                        </div>
+                        <h2 class="text-3xl font-bold mb-6" data-translate="welcome-title">🪂 Calculadora de Estimativas de Airdrops</h2>
+                        <p class="text-base opacity-90" data-translate="welcome-description">Monitoramento e Calculos para estimativas de Airdrops. Base de dados Oficiais dos projetos ou Estimadas com estudo de Benchmarking.
+                    </div>
+                </div>
+
+                <!-- Dashboard Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-green-400" id="totalAirdrops">$0.00</div>
+                        <div class="text-sm opacity-75" data-translate="total-airdrops">Totais Airdrops</div>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-cyan-400" id="totalProjects">30+</div>
+                        <div class="text-sm opacity-75" data-translate="total-projects">Projetos Ativos</div>
+                        <div class="text-xs opacity-50 mt-1" id="projectsBreakdown">Atualizados: 0 / Manutenção: 0 / Finalizados: 0</div>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-yellow-400" id="endingSoon">3</div>
+                        <div class="text-sm opacity-75" data-translate="ending-soon">Finalizando em Breve</div>
+                    </div>
+                </div>
+
+                <!-- Quick Guide -->
+                <div class="glass-card rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold mb-4" data-translate="how-to-use">Como usar:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left text-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-cyan-300">🔍</span>
+                            <span data-translate="how-to-step1">Busque ou filtre e ache o Airdrop que procura.</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-cyan-300">📈</span>
+                            <span data-translate="how-to-step2">Veja os Cenários (Aproximado e Conservador)</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-cyan-300">🖱️</span>
+                            <span data-translate="how-to-step3">Clique para ver mais detalhes do projeto e simular sua pontuação e outras métricas.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Warning Box -->
+                    <div class="mt-8 flex justify-center">
+                        <div class="p-3 rounded-lg max-w-md" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)); border: 1px solid rgba(239, 68, 68, 0.4); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);">
+                            <div class="flex items-center justify-center space-x-2 text-center">
+                                <span class="text-red-400 text-lg">⚠️</span>
+                                <span class="font-bold text-red-300 text-sm" data-translate="how-to-step4">TODAS AS INFORMAÇÕES SÃO ESTIMATIVAS<br/>(Não use como fator definitivo para suas operações)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass-card rounded-lg p-6 shadow-sm mb-8">
+                    <div class="flex gap-4 items-start">
+                        <!-- Campo 1: Buscar Projeto -->
+                        <div class="relative w-full flex flex-col">
+                            <label class="block text-sm font-medium mb-2">
+                                <span class="mr-1">🔍</span> <span data-translate="search-project">Buscar Projeto</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="projectSearch" 
+                                placeholder="Digite o nome do projeto..." 
+                                data-translate-placeholder="search-project-placeholder"
+                                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                                oninput="searchProjects()"
+                                onblur="hideProjectDropdown()"
+                                style="height:48px;"
+                            >
+                            <div id="projectDropdown" class="absolute top-full left-0 right-0 mt-1 z-50 hidden">
+                                <!-- Projects will be populated here -->
+                            </div>
+                        </div>
+                        <!-- Botão Buscar -->
+                        <div class="w-full flex">
+                            <button id="searchButton" onclick="applyFiltersAndSearch()" class="w-full p-3 border rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2" style="height:48px;">
+                                <span class="mr-2">🔍</span>
+                                <span data-translate="search-button">Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Newest Projects -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold" data-translate="top-newest-projects">🔥 Top 3: Novos / Trending</h3>
+                        <button onclick="showAllProjects()" class="text-cyan-400 hover:text-cyan-300 text-sm" data-translate="view-all">Ver Todos →</button>
+                    </div>
+                    <div id="topNewestProjectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Top 3 newest projects will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Top Airdrops by Value -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold mb-6" data-translate="top-airdrops-value">💰 Top 3: Maior Valor de Distribuição</h3>
+                    <div id="topAirdropsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Top 3 airdrops by value will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Top Projects by Time Remaining -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold mb-6" data-translate="top-projects-time">⏰ Top 3: Mais tempo pra Farmar</h3>
+                    <div id="topTimeProjectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Top 3 projects by time remaining will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Networks Overview -->
+                
+            </div>
+            
+            <!-- Warning -->
+            <div class="glass-card rounded-lg p-4 mb-8">
+                <div class="flex items-start space-x-3">
+                    <span class="text-cyan-400 mt-1">⚠️</span>
+                    <div>
+                        <h3 class="font-semibold text-cyan-200" data-translate="warning-title">Aviso Importante</h3>
+                        <p class="text-cyan-300 mt-1" data-translate="warning-text">
+                            Estas são estimativas conservadoras baseadas em dados públicos. Os valores podem variar com mudanças de FDV, dinâmica de mercado, vesting, NFTs queimados ou alterações na tokenomics. <strong>Não constitui aconselhamento financeiro.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Details -->
+            <div id="projectDetails" class="hidden"></div>
+        </div>
+    </div>
+        
+    <!-- Video and Social Section -->
+    <section class="video-section py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Videos Section -->
+                <div class="mb-16">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold text-white mb-4">
+                            <span class="text-red-500 mr-3">📺</span>
+                            <span data-translate="learn-airdrops">Aprenda sobre Airdrops e DeFi com Intus Cripto</span>
+                        </h2>
+                        <p class="text-gray-300 text-lg" data-translate="videos-description">Confira nossos vídeos educacionais sobre os projetos e redes da calculadora</p>
+                    </div>
+                    
+                    <div class="video-carousel flex space-x-6 pb-4" style="overflow-x: auto;">
+                        <!-- Video Card 1 - Estes Airdrops Mudaram -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/kTkPxmNvmZI/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=kTkPxmNvmZI" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">10:38</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">🚨 ESTES AIRDROPS MUDARAM! ENTENDA AS ATUALIZAÇÕES!</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">8 de maio de 2025 • 11.362 visualizações</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Card 2 - Pools de Liquidez -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/MTZQNUOIeoc/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=MTZQNUOIeoc" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">21:26</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">🪂 2 AIRDROPS AUTOMATIZANDO POOLS DE LIQUIDEZ 🤯</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">4 meses atrás • 1.940 visualizações</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Card 3 - Eigen Layer -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/OPxxXmeXz4Y/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=OPxxXmeXz4Y" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">1:01:37</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">MAIS RENDIMENTO e MAIS AIRDROP! - EIGEN LAYER / RESTAKING</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">1 ano atrás • 1.070 visualizações</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Card 4 - Eclipse Airdrop -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/qwpvsPavr7A/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=qwpvsPavr7A" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">25:53</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">🪂 AIRDROP ECLIPSE: ESTRATÉGIA COM MAIS DE 5 AIRDROPS 🚀</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">4 meses atrás • 15.308 visualizações</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Card 5 - DeFi Potencializa -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/6o0ZiGLjzzQ/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=6o0ZiGLjzzQ" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">1:30:21</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">COMO AIRDROPS E DEFI POTENCIALIZAM SEUS INVESTIMENTOS</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">11 meses atrás • 1.007 visualizações</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Card 6 - Sendo Farmado -->
+                        <div class="video-card flex-shrink-0">
+                            <div class="video-thumbnail" style="background-image: url('https://i.ytimg.com/vi/tZ0iGQvix6M/hq720.jpg');">
+                                <a href="https://www.youtube.com/watch?v=tZ0iGQvix6M" target="_blank" class="play-button">
+                                    <span>▶️</span>
+                                </a>
+                                <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">58:56</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-white mb-2 line-clamp-2">VOCÊ ESTA SENDO FARMADO! AIRDROPS FRUSTANTES?</h3>
+                                <p class="text-gray-400 text-sm">Diego | IntusCripto</p>
+                                <p class="text-gray-500 text-xs mt-1">1 ano atrás • 1.087 visualizações</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Social Media Section -->
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">
+                        <span class="text-cyan-400 mr-3">👥</span>
+                        <span data-translate="follow-intus">Siga a Intus Cripto</span>
+                    </h2>
+                    <p class="text-gray-300 text-lg mb-8" data-translate="follow-description">Acompanhe nossas análises e conteúdos em todas as plataformas</p>
+                    
+                    <div class="social-icons">
+                        <a href="https://www.youtube.com/@IntusCripto" target="_blank" class="social-icon social-youtube" title="YouTube">
+                            <span>📺</span>
+                        </a>
+                        
+                        <a href="https://x.com/diego_intus" target="_blank" class="social-icon social-twitter" title="Twitter">
+                            <span>🐦</span>
+                        </a>
+                        
+                        <a href="https://discord.gg/3rTJgsUR" target="_blank" class="social-icon social-discord" title="Discord">
+                            <span>💬</span>
+                        </a>
+                        
+                        <a href="https://www.instagram.com/intuscripto/" target="_blank" class="social-icon social-instagram" title="Instagram">
+                            <span>📷</span>
+                        </a>
+                        
+                        <a href="https://www.tiktok.com/@intuscripto" target="_blank" class="social-icon social-tiktok" title="TikTok">
+                            <span>🎵</span>
+                        </a>
+                        
+                        <a href="https://diegointuscripto.com.br/" target="_blank" class="social-icon social-website" title="Website">
+                            <span>🌐</span>
+                        </a>
+                        
+                        <a href="https://news.intuscripto.com.br/" target="_blank" class="social-icon social-newsletter" title="Newsletter">
+                            <span>📧</span>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 p-6 glass-card rounded-xl">
+                        <p class="text-cyan-400 font-semibold mb-2">
+                            <span class="mr-2">⭐</span>
+                            <span data-translate="community-cta">Faça parte da melhor comunidade de CriptoAtivos do Brasil</span>
+                        </p>
+                        <p class="text-gray-300 text-sm" data-translate="community-description">
+                            Acesse conteúdos exclusivos, análises detalhadas e mantenha-se atualizado sobre as melhores oportunidades no mundo cripto
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex justify-center items-center space-x-4">
+                    <div class="intus-colors rounded-lg w-12 h-12 flex items-center justify-center p-1">
+                        <img src="https://page1.genspark.site/v1/base64_upload/a7e85a179f3330057bcfbc913fef9901" alt="Intus Cripto" class="w-full h-full object-contain">
+                    </div>
+                    <div class="text-center">
+                        <p class="font-semibold" data-translate="footer-copyright">© 2024 Intus Cripto</p>
+                        <p class="text-sm" data-translate="footer-slogan">Faça parte da melhor comunidade de CriptoAtivos do Brasil</p>
+                        <p class="text-xs mt-1 opacity-75" data-translate="footer-data">Dados atualizados automaticamente</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    
+    <script>
+
+        // CONFIGURAÇÃO DO SUPABASE
+        const SUPABASE_URL = 'https://kjkfyiqcvspsyyqcvqut.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtqa2Z5aXFjdnNwc3l5cWN2cXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1MDIxOTIsImV4cCI6MjA2NTA3ODE5Mn0.AUqq-m3CH5GLbezINTyex0zAoxf2Fuvy5uXJIOKGGZE';
+
+        let supabase = null;
+
+        // Mouse follower effect
+        document.addEventListener('mousemove', function(e) {
+            const mouseGlow = document.getElementById('mouseGlow');
+            const x = e.clientX - 150; // Half of glow width
+            const y = e.clientY - 150; // Half of glow height
+            mouseGlow.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        // Translations object
+        const translations = {
+            pt: {
+                'site-title': 'Intus Cripto',
+                'site-subtitle': 'Calculadora de Airdrops',
+                'welcome-title': '🪂 Calculadora de Estimativas de Airdrops',
+                'welcome-description': 'Monitoramente e Calculos para estimativas de Airdrops. Base de dados Oficiais dos projetos ou Estimadas com estudo de Benchmarking.',
+                'how-to-use': 'Como usar:',
+                'how-to-step1': 'Busque ou filtre e ache o Airdrop que procura.',
+                'how-to-step2': 'Veja os Cenários (Aproximado e Conservador)',
+                'how-to-step3': 'Clique para ver mais detalhes do projeto e simular sua pontuação e outras métricas.',
+                'how-to-step4': 'TODAS AS INFORMAÇÕES SÃO ESTIMATIVAS<br/>(Não use como fator definitivo para suas operações)',
+                'warning-title': 'Aviso Importante',
+                'warning-text': 'Estas são estimativas conservadoras baseadas em dados públicos. Os valores podem variar com mudanças de FDV, dinâmica de mercado, vesting, NFTs queimados ou alterações na tokenomics. Não constitui aconselhamento financeiro.',
+                'search-project': 'Buscar Projeto',
+                'search-project-placeholder': 'Digite o nome do projeto...',
+                'visualize': 'Visualizar',
+                'include-finalized': 'Incluir Airdrops e Seasons finalizadas',
+                'include-maintenance': 'Incluir projetos em Manutenção/Espera',
+                'sort-by': 'Filtre por métrica',
+                'sort-placeholder': 'Qual métrica quer filtrar?',
+                'sort-network': 'Rede / Network',
+                'sort-days-remaining': 'Dias Restantes',
+                'sort-total-airdrop': 'Total Airdrop ($)',
+                'order': 'Ordem',
+                'order-placeholder': 'Selecione a ordem',
+                'order-desc': 'Decrescente (Maior primeiro)',
+                'order-asc': 'Crescente (Menor primeiro)',
+                'search-button': 'Buscar',
+                'search-validation': 'Por favor, selecione uma métrica para ordenar e a ordem desejada.',
+                'footer-copyright': '© 2024 Intus Cripto',
+                'footer-slogan': 'Faça parte da melhor comunidade de CriptoAtivos do Brasil',
+                'footer-data': 'Dados atualizados automaticamente',
+                'airdrop-usdc-title': 'Airdrop em USDC',
+                'your-points': 'Seus Pontos',
+                'simulated-fdv': 'FDV Simulado ($)',
+                'simulated-supply': 'Airdrop Supply Simulado (%)',
+                'calculate': 'Calcular',
+                'conservative': 'Conservador',
+                'approximate': 'Aproximado',
+                'estimated-value': 'Valor Estimado',
+                'total-projects': 'Total Airdrops Monitorados',
+                'total-airdrops': 'Total em USD ($) Monitorados',
+                'ending-soon': 'Finalizando em Breve',
+                'top-airdrops-value': '💰 Top 3 Airdrops (Maior Valor)',
+                'top-projects-time': '⏰ Top 3 Mais Tempo para Farmar',
+                'top-newest-projects': '🔥 Top 3: Novos / Trending',
+                'maintenance-status': 'Manutenção/Espera',
+                'view-all': 'Ver Todos →',
+                'networks-overview': '🌐 Redes Suportadas',
+                'days-left': 'dias restantes',
+                'active': 'Ativo',
+                'inactive': 'Inativo',
+                'learn-airdrops': 'Aprenda sobre Airdrops e DeFi com Intus Cripto',
+                'videos-description': 'Confira nossos vídeos educacionais sobre os projetos e redes da calculadora',
+                'follow-intus': 'Siga a Intus Cripto',
+                'follow-description': 'Acompanhe nossas análises e conteúdos em todas as plataformas',
+                'community-cta': 'Faça parte da melhor comunidade de CriptoAtivos do Brasil',
+                'community-description': 'Acesse conteúdos exclusivos, análises detalhadas e mantenha-se atualizado sobre as melhores oportunidades no mundo cripto',
+                'back-to-dashboard': 'Voltar ao Dashboard'
+            },
+            en: {
+                'site-title': 'Intus Crypto',
+                'site-subtitle': 'Airdrop Calculator',
+                'welcome-title': '🪂 Airdrop Estimates Calculator',
+                'welcome-description': 'Monitoring and Calculations for Airdrop estimates. Official project data or Estimated with Benchmarking studies.',
+                'how-to-use': 'How to use:',
+                'how-to-step1': 'Search or filter and find the Airdrop you are looking for.',
+                'how-to-step2': 'View Scenarios (Approximate and Conservative)',
+                'how-to-step3': 'Click to see more project details and simulate your score and other metrics.',
+                'how-to-step4': 'ALL INFORMATION IS ESTIMATES<br/>(Do not use as a definitive factor for your operations)',
+                'warning-title': 'Important Warning',
+                'warning-text': 'These are conservative estimates based on public data. Values may vary with changes in FDV, market dynamics, vesting, burned NFTs, or tokenomics changes. Does not constitute financial advice.',
+                'search-project': 'Search Project',
+                'search-project-placeholder': 'Type the project name...',
+                'visualize': 'Display',
+                'include-finalized': 'Include Finalized Airdrops and Seasons',
+                'include-maintenance': 'Include projects in Maintenance/Waiting',
+                'sort-by': 'Filter by metric',
+                'sort-placeholder': 'Which metric to filter?',
+                'sort-network': 'Network',
+                'sort-days-remaining': 'Days Remaining',
+                'sort-total-airdrop': 'Total Airdrop ($)',
+                'order': 'Order',
+                'order-placeholder': 'Select order',
+                'order-desc': 'Descending (Highest first)',
+                'order-asc': 'Ascending (Lowest first)',
+                'search-button': 'Search',
+                'search-validation': 'Please select a metric to sort by and the desired order.',
+                'footer-copyright': '© 2024 Intus Crypto',
+                'footer-slogan': 'Join the best CryptoAssets community in Brazil',
+                'footer-data': 'Data updated automatically',
+                'airdrop-usdc-title': 'Airdrop in USDC',
+                'your-points': 'Your Points',
+                'simulated-fdv': 'Simulated FDV ($)',
+                'simulated-supply': 'Simulated Airdrop Supply (%)',
+                'calculate': 'Calculate',
+                'conservative': 'Conservative',
+                'approximate': 'Approximate',
+                'estimated-value': 'Estimated Value',
+                'total-projects': 'Total Airdrops Monitored',
+                'total-airdrops': 'Total USD ($) Monitored',
+                'ending-soon': 'Ending Soon',
+                'top-airdrops-value': '💰 Top 3 Airdrops (Highest Value)',
+                'top-projects-time': '⏰ Top 3 Most Time to Farm',
+                'top-newest-projects': '🔥 Top 3: New / Trending',
+                'maintenance-status': 'Maintenance/Waiting',
+                'view-all': 'View All →',
+                'networks-overview': '🌐 Supported Networks',
+                'days-left': 'days left',
+                'active': 'Active',
+                'inactive': 'Inactive',
+                'learn-airdrops': 'Learn about Airdrops and DeFi with Intus Crypto',
+                'videos-description': 'Check out our educational videos about calculator projects and networks',
+                'follow-intus': 'Follow Intus Crypto',
+                'follow-description': 'Follow our analysis and content on all platforms',
+                'community-cta': 'Join the best CryptoAssets community in Brazil',
+                'community-description': 'Access exclusive content, detailed analysis and stay updated on the best opportunities in the crypto world',
+                'back-to-dashboard': 'Back to Dashboard'
+            },
+            es: {
+                'site-title': 'Intus Cripto',
+                'site-subtitle': 'Calculadora de Airdrops',
+                'welcome-title': '🪂 Calculadora de Estimaciones de Airdrops',
+                'welcome-description': 'Monitoreo y Cálculos para estimaciones de Airdrops. Base de datos Oficiales de proyectos o Estimadas con estudios de Benchmarking.',
+                'how-to-use': 'Cómo usar:',
+                'how-to-step1': 'Busca o filtra y encuentra el Airdrop que buscas.',
+                'how-to-step2': 'Ve los Escenarios (Aproximado y Conservador)',
+                'how-to-step3': 'Haz clic para ver más detalles del proyecto y simular tu puntuación y otras métricas.',
+                'how-to-step4': 'TODA LA INFORMACIÓN SON ESTIMACIONES<br/>(No uses como factor definitivo para tus operaciones)',
+                'warning-title': 'Aviso Importante',
+                'warning-text': 'Estas son estimaciones conservadoras basadas en datos públicos. Los valores pueden variar con cambios en FDV, dinámica de mercado, vesting, NFTs quemados o cambios en tokenomics. No constituye asesoramiento financiero.',
+                'search-project': 'Buscar Proyecto',
+                'search-project-placeholder': 'Escribe el nombre del proyecto...',
+                'visualize': 'Visualizar',
+                'include-finalized': 'Incluir Airdrops y Seasons finalizadas',
+                'include-maintenance': 'Incluir proyectos en Mantenimiento/Espera',
+                'sort-by': 'Filtrar por métrica',
+                'sort-placeholder': '¿Qué métrica quiere filtrar?',
+                'sort-network': 'Red / Network',
+                'sort-days-remaining': 'Días Restantes',
+                'sort-total-airdrop': 'Total Airdrop ($)',
+                'order': 'Orden',
+                'order-placeholder': 'Seleccione el orden',
+                'order-desc': 'Descendente (Mayor primero)',
+                'order-asc': 'Ascendente (Menor primero)',
+                'search-button': 'Buscar',
+                'search-validation': 'Por favor, seleccione una métrica para ordenar y el orden deseado.',
+                'footer-copyright': '© 2024 Intus Cripto',
+                'footer-slogan': 'Únete a la mejor comunidad de CriptoActivos de Brasil',
+                'footer-data': 'Datos actualizados automáticamente',
+                'airdrop-usdc-title': 'Airdrop en USDC',
+                'your-points': 'Tus Puntos',
+                'simulated-fdv': 'FDV Simulado ($)',
+                'simulated-supply': 'Suministro Airdrop Simulado (%)',
+                'calculate': 'Calcular',
+                'conservative': 'Conservador',
+                'approximate': 'Aproximado',
+                'estimated-value': 'Valor Estimado',
+                'total-projects': 'Total Airdrops Monitoreados',
+                'total-airdrops': 'Total en USD ($) Monitoreados',
+                'ending-soon': 'Finalizando Pronto',
+                'top-airdrops-value': '💰 Top 3 Airdrops (Mayor Valor)',
+                'top-projects-time': '⏰ Top 3 Más Tiempo para Farmear',
+                'top-newest-projects': '🔥 Top 3: Nuevos / Trending',
+                'maintenance-status': 'Mantenimiento/Espera',
+                'view-all': 'Ver Todos →',
+                'networks-overview': '🌐 Redes Soportadas',
+                'days-left': 'días restantes',
+                'active': 'Activo',
+                'inactive': 'Inactivo',
+                'learn-airdrops': 'Aprende sobre Airdrops y DeFi con Intus Cripto',
+                'videos-description': 'Mira nuestros videos educativos sobre los proyectos y redes de la calculadora',
+                'follow-intus': 'Sigue a Intus Cripto',
+                'follow-description': 'Sigue nuestros análisis y contenido en todas las plataformas',
+                'community-cta': 'Únete a la mejor comunidad de CriptoActivos de Brasil',
+                'community-description': 'Accede a contenido exclusivo, análisis detallados y mantente actualizado sobre las mejores oportunidades en el mundo cripto',
+                'back-to-dashboard': 'Volver al Dashboard'
+            }
+        };
+        
+        // Language functions
+        let currentLanguage = 'pt';
+        let isDarkMode = true;
+        let currentUser = { name: 'Usuário Intus', method: 'direct' };
+        let projectsData = null;
+        
+        // Close language dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('languageDropdown');
+        });
+
+        // Funções de formatação brasileira
+        function formatNumberBR(value) {
+            if (!value) return '';
+            // Remove tudo que não é dígito
+            const numbers = value.toString().replace(/\D/g, '');
+            // Adiciona pontos a cada 3 dígitos
+            return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function unformatNumberBR(value) {
+            if (!value) return 0;
+            // Remove pontos e converte para número
+            return parseFloat(value.toString().replace(/\./g, '')) || 0;
+        }
+
+        function formatCurrencyBR(value) {
+            if (!value) return '';
+            const numbers = value.toString().replace(/\D/g, '');
+            return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Formatação para porcentagem brasileira (usada no blur)
+        function formatPercentBR(value) {
+            if (!value) return '';
+            
+            // Remove % e espaços
+            let cleanValue = value.toString().replace(/%/g, '').trim();
+            
+            // Se estiver vazio após limpeza, retorna vazio
+            if (!cleanValue) return '';
+            
+            // Substitui ponto por vírgula (padrão brasileiro)
+            cleanValue = cleanValue.replace(/\./g, ',');
+            
+            // Remove caracteres inválidos, mantendo apenas números e vírgula
+            cleanValue = cleanValue.replace(/[^\d,]/g, '');
+            
+            // Garante que só tenha uma vírgula
+            const parts = cleanValue.split(',');
+            if (parts.length > 2) {
+                cleanValue = parts[0] + ',' + parts.slice(1).join('');
+            }
+            
+            // Limita casas decimais a 2 e formata adequadamente
+            if (parts.length === 2) {
+                // Se tem parte decimal
+                let decimal = parts[1];
+                if (decimal.length === 1) {
+                    decimal += '0'; // 5,5 vira 5,50
+                } else if (decimal.length > 2) {
+                    decimal = decimal.substring(0, 2); // limita a 2 casas
+                }
+                cleanValue = parts[0] + ',' + decimal;
+            } else {
+                // Se não tem decimal, adiciona ,00
+                cleanValue += ',00';
+            }
+            
+            // Adiciona % no final
+            return cleanValue + '%';
+        }
+
+        function unformatPercentBR(value) {
+            if (!value) return 0;
+            // Remove % e converte vírgula para ponto, depois converte para número
+            return parseFloat(value.toString().replace('%', '').replace(',', '.')) || 0;
+        }
+
+        // Adicionar formatação dinâmica aos inputs
+        function addBRFormatting(inputId, type = 'number') {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            let formatTimeout;
+            
+            if (type === 'percent') {
+                // Para porcentagem, usar abordagem diferente
+                input.addEventListener('input', function(e) {
+                    // Limpar timeout anterior
+                    clearTimeout(formatTimeout);
+                    
+                    // Permitir digitação livre, apenas limpar caracteres inválidos
+                    let value = e.target.value;
+                    
+                    // Remove caracteres inválidos, mantém números, vírgula e %
+                    value = value.replace(/[^\d,%]/g, '');
+                    
+                    // Garante apenas uma vírgula
+                    const parts = value.split(',');
+                    if (parts.length > 2) {
+                        value = parts[0] + ',' + parts.slice(1).join('');
+                    }
+                    
+                    // Se não termina com %, adiciona
+                    if (value && !value.endsWith('%')) {
+                        value += '%';
+                    }
+                    
+                    e.target.value = value;
+                    
+                    // Posicionar cursor antes do %
+                    const cursorPos = Math.max(0, value.length - 1);
+                    e.target.setSelectionRange(cursorPos, cursorPos);
+                });
+                
+                // Formatar quando sair do campo
+                input.addEventListener('blur', function(e) {
+                    if (e.target.value) {
+                        e.target.value = formatPercentBR(e.target.value);
+                    }
+                });
+                
+                // Controlar posição do cursor
+                input.addEventListener('click', function(e) {
+                    const length = e.target.value.length;
+                    if (e.target.selectionStart >= length - 1) {
+                        e.target.setSelectionRange(length - 1, length - 1);
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    const length = e.target.value.length;
+                    if (e.target.selectionStart >= length - 1 && 
+                        (e.key === 'ArrowRight' || e.key === 'End')) {
+                        e.preventDefault();
+                    }
+                });
+                
+            } else {
+                // Para números normais, usar debounce
+                input.addEventListener('input', function(e) {
+                    clearTimeout(formatTimeout);
+                    
+                    formatTimeout = setTimeout(() => {
+                        const cursorPos = e.target.selectionStart;
+                        const oldValue = e.target.value;
+                        
+                        e.target.value = formatNumberBR(e.target.value);
+                        
+                        // Ajustar posição do cursor
+                        const newLength = e.target.value.length;
+                        const oldLength = oldValue.length;
+                        const newCursorPos = cursorPos + (newLength - oldLength);
+                        e.target.setSelectionRange(newCursorPos, newCursorPos);
+                    }, 500); // Formata após 500ms sem digitar
+                });
+                
+                // Formatar imediatamente quando sair do campo
+                input.addEventListener('blur', function(e) {
+                    clearTimeout(formatTimeout);
+                    if (e.target.value) {
+                        e.target.value = formatNumberBR(e.target.value);
+                    }
+                });
+            }
+            
+            // Formatar valor inicial se existir
+            if (input.value) {
+                if (type === 'percent') {
+                    input.value = formatPercentBR(input.value);
+                } else {
+                    input.value = formatNumberBR(input.value);
+                }
+            }
+        }
+
+        // ROI Simulator Functions
+        function createROISimulator(projectName, project) {
+            const simulatorId = `roi-simulator-${projectName.replace(/\s+/g, '')}`;
+            
+            // Valores formatados
+            const fdvFormatted = project.fdv ? formatNumberBR(project.fdv) : '';
+            const alocacaoFormatted = project.alocacaoPercent ? `${project.alocacaoPercent}` : '5';
+            
+            const html = `
+                <div id="${simulatorId}" class="roi-simulator mb-6" data-project-name="${projectName}">
+                    <h3>
+                        <span>🧮</span>
+                        <span data-translate="airdrop-usdc-title">Airdrop em USDC</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" data-translate="your-points">Seus Pontos</label>
+                            <input type="text" 
+                                   id="${simulatorId}-points" 
+                                   placeholder="100.000" 
+                                   class="simulator-input"
+                                   data-type="number">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" data-translate="simulated-fdv">FDV Simulado ($)</label>
+                            <input type="text" 
+                                   id="${simulatorId}-fdv" 
+                                   placeholder="${fdvFormatted || '100.000.000'}" 
+                                   class="simulator-input"
+                                   data-type="currency">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" data-translate="simulated-supply">Airdrop Supply Simulado (%)</label>
+                            <input type="text" 
+                                   id="${simulatorId}-supply" 
+                                   placeholder="${alocacaoFormatted ? formatPercentBR(alocacaoFormatted) : '5,00%'}" 
+                                   class="simulator-input"
+                                   data-type="percent">
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <button onclick="calculateROI('${simulatorId}', '${projectName}')" class="roi-calculate-btn">
+                            <span class="mr-2">🧮</span>
+                            <span data-translate="calculate">Calcular</span>
+                        </button>
+                    </div>
+                    
+                    <div id="${simulatorId}-results" class="roi-results">
+                        <div class="roi-result-card roi-result-conservative">
+                            <h4 class="font-semibold mb-2">
+                                <span class="mr-2">🛡️</span>
+                                <span data-translate="conservative">Conservador</span>
+                            </h4>
+                            <div class="text-sm">
+                                <div class="mb-2">
+                                    <span data-translate="estimated-value">Valor Estimado:</span>
+                                    <span id="${simulatorId}-conservative-value" class="font-bold text-green-400">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="roi-result-card roi-result-approximate">
+                            <h4 class="font-semibold mb-2">
+                                <span class="mr-2">📈</span>
+                                <span data-translate="approximate">Aproximado</span>
+                            </h4>
+                            <div class="text-sm">
+                                <div class="mb-2">
+                                    <span data-translate="estimated-value">Valor Estimado:</span>
+                                    <span id="${simulatorId}-approximate-value" class="font-bold text-green-400">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Adicionar formatação após inserir no DOM
+            setTimeout(() => {
+                addBRFormatting(`${simulatorId}-points`, 'number');
+                addBRFormatting(`${simulatorId}-fdv`, 'currency');
+                addBRFormatting(`${simulatorId}-supply`, 'percent');
+            }, 100);
+            
+            return html;
+        }
+        
+        function calculateROI(simulatorId, projectName) {
+            const project = projectsData[projectName];
+            if (!project) return;
+            
+            // Obter valores e desformatar
+            const userPoints = unformatNumberBR(document.getElementById(`${simulatorId}-points`).value) || 0;
+            const fdvInput = document.getElementById(`${simulatorId}-fdv`).value;
+            const fdvSimulated = fdvInput ? unformatNumberBR(fdvInput) : (project.fdv || 0);
+            const supplyInput = document.getElementById(`${simulatorId}-supply`).value;
+            const airdropSupplyPercent = supplyInput ? unformatPercentBR(supplyInput) : (parseFloat(project.alocacaoPercent) || 0);
+            
+            if (userPoints <= 0 || fdvSimulated <= 0 || airdropSupplyPercent <= 0 || !project.totalSupply) {
+                alert('Por favor, preencha todos os campos com valores válidos.');
+                return;
+            }
+            
+            // Calcular airdrop supply baseado na porcentagem
+            const airdropSupplySimulated = project.totalSupply * (airdropSupplyPercent / 100);
+            
+            // Calculations
+            const valorAirdrop = (fdvSimulated * (airdropSupplySimulated / project.totalSupply));
+            
+            // Conservative scenario
+            const conservativeValue = project.conservador.ptsTotal ? 
+                (userPoints / project.conservador.ptsTotal) * valorAirdrop : 0;
+
+            // Approximate scenario
+            const approximateValue = project.aproximado.ptsTotal ? 
+                (userPoints / project.aproximado.ptsTotal) * valorAirdrop : 0;
+            
+            // Display results
+            document.getElementById(`${simulatorId}-conservative-value`).textContent = `$${conservativeValue.toFixed(4)}`;
+            document.getElementById(`${simulatorId}-approximate-value`).textContent = `$${approximateValue.toFixed(4)}`;
+            
+            // Show results
+            document.getElementById(`${simulatorId}-results`).classList.add('show');
+        }
+        
+        // Dashboard functions
+        function loadDashboard() {
+            calculateDashboardStats();
+            loadTopAirdropsByValue();
+            loadTopProjectsByTime();
+            loadTopNewestProjects();
+            loadNetworks();
+        }
+
+        // Função para limpar e converter o valor para number
+        function parseValorDinheiroParaNumero(valorAirdrop) {
+            if (!valorAirdrop) return 0;
+            if (typeof valorAirdrop === 'number') return valorAirdrop;
+
+            // Remove cifrão, pontos e espaço, troca vírgula por ponto
+            return Number(
+                valorAirdrop
+                    .replace(/[^\d,.-]/g, '') // remove qualquer caractere que não seja dígito, vírgula, ponto ou hífen
+                    .replace(/\./g, '')       // remove os separadores de milhar
+                    .replace(',', '.')        // troca vírgula decimal por ponto
+            ) || 0;
+        }
+
+        function formataParaNumero(valor) {
+            if (!valor) return 0;
+            return Number(
+                valor
+                    .replace(/[^\d,.-]/g, '') // Remove qualquer caractere que não seja dígito, vírgula, ponto ou hífen
+                    .replace(/\./g, '')       // Remove pontos (separador de milhar)
+                    .replace(',', '.')        // Troca vírgula por ponto (decimal)
+            ) || 0;
+        }
+
+        function calculateDashboardStats() {
+            const projects = Object.values(projectsData);
+            
+            // Categorizar projetos por status
+            const activeProjects = projects.filter(p => p.status === 'Ativo' && !isProjectInMaintenance(p));
+            const maintenanceProjects = projects.filter(p => p.status === 'Ativo' && isProjectInMaintenance(p));
+            const finalizedProjects = projects.filter(p => p.status !== 'Ativo');
+            
+            // Total projects (ativos + manutenção)
+            const totalActiveAndMaintenance = activeProjects.length + maintenanceProjects.length;
+            document.getElementById('totalProjects').textContent = totalActiveAndMaintenance;
+            
+            // Breakdown detalhado
+            const breakdownText = `Atualizados: ${activeProjects.length} / Manutenção: ${maintenanceProjects.length} / Finalizados: ${finalizedProjects.length}`;
+            document.getElementById('projectsBreakdown').textContent = breakdownText;
+            
+            // Total Airdrops (sum of valorAirdrop)
+            const totalAirdrops = projects.reduce((sum, p) => sum + (parseValorDinheiroParaNumero(p.valorAirdrop) || 0), 0);
+            document.getElementById('totalAirdrops').textContent = formatCurrency(totalAirdrops);
+            
+            // Projects ending soon (less than 30 days)
+            const endingSoon = projects.filter(p => p.diasRestantes && p.diasRestantes <= 30).length;
+            document.getElementById('endingSoon').textContent = endingSoon;
+        }
+        
+        function loadTopAirdropsByValue() {
+            const projects = Object.values(projectsData);
+            
+            // Sort by airdrop value (highest first) - APENAS projetos ATIVOS (não finalizados)
+            const topAirdrops = projects
+                .filter(p => p.status === 'Ativo') // Apenas projetos ativos, sem finalizados
+                .sort((a, b) => {
+                    const valueA = parseValorDinheiroParaNumero(a.valorAirdrop) || 0;
+                    const valueB = parseValorDinheiroParaNumero(b.valorAirdrop) || 0;
+                    return valueB - valueA; // Descending order (highest first)
+                })
+                .slice(0, 3); // Top 3
+            
+            const container = document.getElementById('topAirdropsGrid');
+            container.innerHTML = topAirdrops.map(project => createProjectCard(project)).join('');
+        }
+        
+        function loadTopProjectsByTime() {
+            const projects = Object.values(projectsData);
+            
+            // Sort by days remaining (highest first) - APENAS projetos ATIVOS (não finalizados)
+            const topTimeProjects = projects
+                .filter(p => p.status === 'Ativo' && p.diasRestantes && p.diasRestantes > 0) // Apenas projetos ativos, sem finalizados
+                .sort((a, b) => {
+                    const daysA = a.diasRestantes || 0;
+                    const daysB = b.diasRestantes || 0;
+                    return daysB - daysA; // Descending order (most time first)
+                })
+                .slice(0, 3); // Top 3
+            
+            const container = document.getElementById('topTimeProjectsGrid');
+            container.innerHTML = topTimeProjects.map(project => createProjectCard(project)).join('');
+        }
+        
+        function loadTopNewestProjects() {
+            const projects = Object.values(projectsData);
+            
+            // Pegar os 3 últimos projetos da planilha (baseado na ordem das linhas no CSV)
+            // Ordena por ordemPlanilha em ordem decrescente para pegar os últimos adicionados
+            // SEM FILTRO DE STATUS - mostra qualquer projeto da planilha na ordem
+            const topNewestProjects = projects
+                .sort((a, b) => {
+                    // Sort by ordem da planilha (maior índice = mais recente)
+                    return b.ordemPlanilha - a.ordemPlanilha;
+                })
+                .slice(0, 3); // Top 3 últimos
+            
+            const container = document.getElementById('topNewestProjectsGrid');
+            container.innerHTML = topNewestProjects.map(project => createProjectCard(project)).join('');
+        }
+        
+        // Função para detectar se um projeto está em manutenção/espera
+        function isProjectInMaintenance(project) {
+            // Verifica se tem dados incompletos (exceto network)
+            const hasIncompleteData = (
+                !project.conservador.custoPorPts || 
+                project.conservador.custoPorPts === 0 ||
+                !project.valorAirdrop || 
+                project.valorAirdrop === 0 ||
+                !project.diasRestantes || 
+                project.diasRestantes === 0
+            );
+            
+            return hasIncompleteData;
+        }
+        
+        // Função para obter o status real do projeto
+        function getProjectStatus(project) {
+            if (isProjectInMaintenance(project)) {
+                return {
+                    status: getTranslation('maintenance-status'),
+                    class: 'status-badge status-maintenance'
+                };
+            } else if (project.status === 'Ativo') {
+                return {
+                    status: 'Ativo',
+                    class: 'status-badge status-active'
+                };
+            } else {
+                return {
+                    status: project.status,
+                    class: 'status-badge status-inactive'
+                };
+            }
+        }
+        
+        function createProjectCard(project) {
+            const valuePerPoint = project.conservador.custoPorPts ? 
+                `${project.conservador.custoPorPts.toFixed(12)}` : 'N/A';
+            
+            const daysLeft = project.diasRestantes ? 
+                `${project.diasRestantes} ${getTranslation('days-left')}` : 'N/A';
+            
+            const projectStatus = getProjectStatus(project);
+            
+            return `
+                <div class="project-card rounded-xl p-6 cursor-pointer hover:scale-105 transition-all duration-300" 
+                     onclick="selectProjectByName('${project.name}')">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-lg">${project.name}</h4>
+                        <span class="${projectStatus.class}">
+                            ${projectStatus.status}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm opacity-75">Network:</span>
+                            <span class="text-sm font-medium text-cyan-300">${project.network || 'N/A'}</span>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <span class="text-sm opacity-75">Valor/Ponto:</span>
+                            <span class="text-sm font-medium text-green-400">${valuePerPoint}</span>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <span class="text-sm opacity-75">Total em Airdrop:</span>
+                            <span class="text-sm font-medium">${formatCurrency(project.valorAirdrop)}</span>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <span class="text-sm opacity-75">Tempo restante:</span>
+                            <span class="text-sm font-medium text-yellow-400">${daysLeft}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-cyan-500 border-opacity-30">
+                        <div class="text-center">
+                            <span class="text-xs text-cyan-400">Clique para ver detalhes</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadNetworks() {
+            const projects = Object.values(projectsData);
+            const networks = {};
+            // Count projects per network
+            projects.forEach(project => {
+                if (project.network) {
+                    if (!networks[project.network]) {
+                        networks[project.network] = { count: 0, active: 0 };
+                    }
+                    networks[project.network].count++;
+                    if (project.status === 'Ativo' || isProjectInMaintenance(project)) {
+                        networks[project.network].active++;
+                    }
+                }
+            });
+            // Ordem: Ethereum sempre primeiro, depois alfabético
+            const orderedNetworks = Object.keys(networks).sort((a, b) => {
+                if (a === 'Ethereum') return -1;
+                if (b === 'Ethereum') return 1;
+                return a.localeCompare(b);
+            });
+            const container = document.getElementById('networksGrid');
+            container.style.display = 'flex';
+            container.style.flexWrap = 'wrap';
+            container.style.gap = '20px'; // gap maior para melhor visual
+            container.innerHTML = orderedNetworks.map(network => 
+                createNetworkCard(network, networks[network])
+            ).join('');
+        }
+        function createNetworkCard(network, data) {
+            const networkEmojis = {
+                'Ethereum': '⚡',
+                'Sonic': '🔵',
+                'Solana': '🟣',
+                'Mantle': '🟢',
+                'Berachain': '🐻',
+                'Eclipse': '🌙',
+                'Sui': '💙',
+                'Base': '🔷'
+            };
+            // Adicione aqui os links das logos 48x48 de cada rede
+            const networkLogos = {
+                'Ethereum': 'imgs/logos/ethereum.svg',
+                'Sonic': 'imgs/logos/sonic.svg',
+                'Solana': 'imgs/logos/solana.svg',
+                'Mantle': 'imgs/logos/mantle.svg',
+                'Berachain': 'imgs/logos/berachain.svg',
+                'Eclipse': 'imgs/logos/eclipse.svg',
+                'Sui': 'imgs/logos/sui.svg',
+                'Base': 'imgs/logos/base.svg',
+            };
+            const logoUrl = networkLogos[network];
+            const emoji = networkEmojis[network] || '🌐';
+            return `
+                <div class="glass-card rounded-xl p-1 text-center hover:border-cyan-400 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center" 
+                     style="width:120px;height:112px;min-width:120px;max-width:120px;min-height:112px;max-height:112px;" 
+                     onclick="filterByNetwork('${network}')">
+                    <div class="flex items-center justify-center" style="height:56px;">
+                        <img src="${logoUrl}" alt="${network} logo" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto;" />
+                    </div>
+                    <div class="text-sm font-bold mt-1">${network}</div>
+                </div>
+            `;
+        }
+        
+        function showAllProjects() {
+            // Hide welcome section and show all projects
+            document.getElementById('welcomeSection').classList.add('hidden');
+            
+            const projects = Object.values(projectsData);
+            showMultipleProjects(projects, 'Todos os Projetos');
+        }
+        
+        function selectProjectByName(projectName) {
+            // Buscar o projeto pelo nome
+            const project = Object.values(projectsData).find(p => p.name === projectName);
+            if (!project) return;
+            // Esconder o dashboard/welcome e mostrar detalhes
+            document.getElementById('welcomeSection').classList.add('hidden');
+            showProjectDetails(project);
+        }
+        
+        function filterByNetwork(network) {
+            // Hide welcome section and show all projects from this network
+            document.getElementById('welcomeSection').classList.add('hidden');
+            
+            const projects = Object.values(projectsData);
+            const networkProjects = projects.filter(p => p.network === network);
+            
+            showMultipleProjects(networkProjects, `Projetos da Rede ${network}`);
+        }
+        
+        function showMultipleProjects(projects, title) {
+            const detailsDiv = document.getElementById('projectDetails');
+            
+            let projectsHtml = projects.map(project => {
+                const valuePerPoint = project.conservador.custoPorPts ? 
+                    `${project.conservador.custoPorPts.toFixed(12)}` : 'N/A';
+                
+                const daysLeft = project.diasRestantes ? 
+                    `${project.diasRestantes} ${getTranslation('days-left')}` : 'N/A';
+                
+                const projectStatus = getProjectStatus(project);
+                
+                return `
+                    <div class="project-card rounded-xl p-6 cursor-pointer hover:scale-105 transition-all duration-300" 
+                         onclick="selectProjectByName('${project.name}')">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold text-lg">${project.name}</h4>
+                            <span class="${projectStatus.class}">
+                                ${projectStatus.status}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm opacity-75">Network:</span>
+                                <span class="text-sm font-medium text-cyan-300">${project.network || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <span class="text-sm opacity-75">Valor/Ponto:</span>
+                                <span class="text-sm font-medium text-green-400">${valuePerPoint}</span>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <span class="text-sm opacity-75">Total em Airdrop:</span>
+                                <span class="text-sm font-medium">${formatCurrency(project.valorAirdrop)}</span>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <span class="text-sm opacity-75">Tempo restante:</span>
+                                <span class="text-sm font-medium text-yellow-400">${daysLeft}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-cyan-500 border-opacity-30">
+                            <div class="text-center">
+                                <span class="text-xs text-cyan-400">Clique para ver detalhes</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            detailsDiv.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">${title}</h2>
+                        <button onclick="goBackToWelcome()" class="back-button px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <span>←</span>
+                            <span data-translate="back-to-dashboard">Voltar ao Dashboard</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${projectsHtml}
+                    </div>
+                </div>
+            `;
+            
+            detailsDiv.classList.remove('hidden');
+        }
+        
+        function goBackToWelcome() {
+            document.getElementById('projectDetails').classList.add('hidden');
+            document.getElementById('welcomeSection').classList.remove('hidden');
+            document.getElementById('projectSearch').value = '';
+            selectedProjectKey = null;
+        }
+        
+        function getTranslation(key) {
+            return translations[currentLanguage] && translations[currentLanguage][key] 
+                ? translations[currentLanguage][key] 
+                : key;
+        }
+        
+        // Format currency helper
+        function formatCurrency(value) {
+            value = parseValorDinheiroParaNumero(value);
+            if (value === null || value === undefined) return '-';
+            if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}B`;
+            if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+            if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+            return `${value.toFixed(2)}`;
+        }
+        
+        // Project search functions
+        let searchTimeout;
+        let selectedProjectKey = null;
+        
+        function loadProjects() {
+            // Não precisamos mais carregar o select, mas mantemos a função para compatibilidade
+            populateProjectDropdown('');
+        }
+        
+        function searchProjects() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = document.getElementById('projectSearch').value;
+                const dropdown = document.getElementById('projectDropdown');
+                
+                if (searchTerm.trim().length > 0) {
+                    populateProjectDropdown(searchTerm);
+                    dropdown.classList.remove('hidden');
+                } else {
+                    dropdown.classList.add('hidden');
+                }
+            }, 300); // Debounce de 300ms
+        }
+        
+        function populateProjectDropdown(searchTerm) {
+            const dropdown = document.getElementById('projectDropdown');
+            const filteredProjects = Object.keys(projectsData).filter(key => {
+                const project = projectsData[key];
+                const searchText = `${project.name} ${project.network || ''} ${project.season || ''}`.toLowerCase();
+                return searchText.includes(searchTerm.toLowerCase());
+            });
+            
+            if (filteredProjects.length === 0 && searchTerm) {
+                dropdown.innerHTML = '<div class="p-2 text-gray-400 text-center text-sm">Nenhum projeto encontrado</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            // Mostrar todos os projetos filtrados (com scroll)
+            filteredProjects.forEach(key => { 
+                const project = projectsData[key];
+                const projectStatus = getProjectStatus(project);
+                const statusColor = isProjectInMaintenance(project) ? 'text-yellow-400' : 
+                                   (project.status === 'Ativo' ? 'text-green-400' : 'text-gray-400');
+                html += `
+                    <div class="project-dropdown-item cursor-pointer border-b border-gray-600" 
+                         onclick="selectProjectFromDropdown('${key}', '${project.name}')"
+                         onmousedown="event.preventDefault()">
+                        <div class="text-sm font-medium text-white">${project.name}</div>
+                        <div class="text-xs text-gray-400">
+                            <span class="${statusColor}">${projectStatus.status}</span> • 
+                            <span>${project.network || 'N/A'}</span>
+                            ${project.season ? ` • Season ${project.season}` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            dropdown.innerHTML = html;
+        }
+        
+        function showProjectDropdown() {
+            const searchInput = document.getElementById('projectSearch');
+            const dropdown = document.getElementById('projectDropdown');
+            
+            // Só mostrar se houver texto de busca (não mostrar ao apenas clicar)
+            if (searchInput.value.trim().length > 0) {
+                populateProjectDropdown(searchInput.value);
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+        
+        function hideProjectDropdown() {
+            // Delay para permitir clique nos itens
+            setTimeout(() => {
+                document.getElementById('projectDropdown').classList.add('hidden');
+            }, 200);
+        }
+        
+
+        
+        function selectProjectFromDropdown(projectKey, projectName) {
+            event.stopPropagation(); // Evitar que o evento de blur seja acionado
+            document.getElementById('projectSearch').value = projectName;
+            selectedProjectKey = projectKey;
+            document.getElementById('projectDropdown').classList.add('hidden');
+            
+            // Mostrar detalhes do projeto
+            document.getElementById('welcomeSection').classList.add('hidden');
+            showProjectDetails(projectsData[projectKey]);
+        }
+        
+
+        
+
+        
+        function showProjectDetails(project) {
+            const detailsDiv = document.getElementById('projectDetails');
+            
+            const formatNumber = (value) => {
+                if (value === null || value === undefined) return 'N/A';
+                return value.toLocaleString();
+            };
+            
+            const formatPercent = (value) => {
+                if (value === null || value === undefined) return 'N/A';
+                // Garante que só tenha um % no final
+                let str = value.toString().trim();
+                if (str.endsWith('%')) return str;
+                return `${str}%`;
+            };
+            
+            const conservadorValue = project.conservador.custoPorPts ? 
+                `${project.conservador.custoPorPts.toFixed(12)}` : 'N/A';
+            const aproximadoValue = project.aproximado.custoPorPts ? 
+                `${project.aproximado.custoPorPts.toFixed(12)}` : 'N/A';
+            
+            // Create ROI simulator
+            const roiSimulator = createROISimulator(project.name, project);
+            
+            detailsDiv.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Detalhes do Projeto</h2>
+                        <button onclick="goBackToWelcome()" class="back-button px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <span>←</span>
+                            <span data-translate="back-to-dashboard">Voltar ao Dashboard</span>
+                        </button>
+                    </div>
+                    
+                    <div class="project-card rounded-xl shadow-lg p-6 fade-in" data-project-name="${project.name}">
+                        
+                        ${roiSimulator}
+                        
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center space-x-3">
+                                <h2 class="text-2xl font-bold">${project.name}</h2>
+                                <a href="${project.consulta}" target="_blank" class="text-cyan-400 hover:text-cyan-300">
+                                    <span>🔗</span>
+                                </a>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="${getProjectStatus(project).class}">${getProjectStatus(project).status}</span>
+                                <span class="bg-cyan-500 bg-opacity-20 text-cyan-300 px-3 py-1 rounded-full text-sm font-medium border border-cyan-500">${project.network || 'N/A'}</span>
+                                <span class="bg-cyan-400 bg-opacity-20 text-cyan-200 px-3 py-1 rounded-full text-sm font-medium border border-cyan-400">${project.season || 'N/A'}</span>
+                                ${project.observacoes ? `<span class="bg-orange-500 bg-opacity-20 text-orange-300 px-3 py-1 rounded-full text-sm font-medium border border-orange-500">${project.observacoes}</span>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="value-highlight text-center mb-6">
+                            <span class="mr-2">🪙</span> Valor por Ponto
+                            <div class="text-2xl font-bold mt-1">${conservadorValue}</div>
+                            <div class="text-sm opacity-90">Conservador</div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">Total Supply Tokens</div>
+                                <div class="text-lg font-semibold">${formatNumber(project.totalSupply)}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">FDV (Valuation)</div>
+                                <div class="text-lg font-semibold">${formatCurrency(project.fdv)}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">% Airdrop</div>
+                                <div class="text-lg font-semibold">${formatPercent(project.alocacaoPercent)}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">Airdrop supply em tokens</div>
+                                <div class="text-lg font-semibold">${formatNumber(project.airdropSupply)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">TVL (total value locked)</div>
+                                <div class="text-lg font-semibold">${formatCurrency(project.tvl)}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">Valor Total Airdrop ($)(</div>
+                                <div class="text-lg font-semibold">${formatCurrency(project.valorAirdrop)}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4">
+                                <div class="text-sm opacity-75 mb-1">Token (Ticker)</div>
+                                <div class="text-lg font-semibold">${project.token || 'TBA (Não anunciado)'}</div>
+                            </div>
+                            
+                            <div class="glass-card rounded-lg p-4 border-cyan-400">
+                                <div class="text-sm opacity-75 mb-1">Valor Token (Baseado no Supply Estimado) Token</div>
+                                <div class="text-lg font-semibold text-cyan-300">${project.valorToken ? `${project.valorToken.toFixed(4)}` : 'N/A'}</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-semibold mb-4">Cenários de Pontos</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="scenario-card scenario-conservative">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold"><span class="mr-2">🛡️</span> Conservador</h4>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <div class="opacity-90">Valor so Ponto em USD($):</div>
+                                        <div class="font-semibold">${conservadorValue}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Pontos Totais (Fim da Season):</div>
+                                        <div class="font-semibold">${formatNumber(project.conservador.ptsTotal)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Pontos por Token:</div>
+                                        <div class="font-semibold">${project.conservador.ptsPorToken || 'N/A'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Média Diária:</div>
+                                        <div class="font-semibold">${formatNumber(project.conservador.mediaDiaria)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scenario-card scenario-approximate">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold"><span class="mr-2">📈</span> Aproximado</h4>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <div class="opacity-90">Valor so Ponto em USD($):</div>
+                                        <div class="font-semibold">${aproximadoValue}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Pontos Totais (Fim da Season):</div>
+                                        <div class="font-semibold">${formatNumber(project.aproximado.ptsTotal)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Pontos por Token:</div>
+                                        <div class="font-semibold">${project.aproximado.ptsPorToken || 'N/A'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="opacity-90">Média Diária:</div>
+                                        <div class="font-semibold">${formatNumber(project.aproximado.mediaDiaria)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-semibold mb-4">Status Pontuação</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-cyan-400">${formatNumber(project.conservador.ptsAtuais)}</div>
+                                <div class="opacity-75">Pontos Atuais</div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-cyan-300">${formatNumber(project.conservador.mediaDiaria)}</div>
+                                <div class="opacity-75">Pontos/Dia (Média)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card rounded-lg p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <div class="opacity-75">Atualizado em:</div>
+                                    <div class="font-semibold">${project.dataAtualizacao || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="opacity-75">Fim da Season:</div>
+                                    <div class="font-semibold">${project.finalSeason || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="opacity-75">Dias Restantes:</div>
+                                    <div class="font-semibold">${project.diasRestantes ? `${project.diasRestantes} dias` : 'N/A'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            detailsDiv.classList.remove('hidden');
+        }
+        
+        function applySorting() {
+            console.log('Sorting applied');
+        }
+
+        // Nova função para aplicar filtros e buscar
+        function applyFiltersAndSearch() {
+            const includeFinalized = document.getElementById('includeFinalized').checked;
+            const includeMaintenance = document.getElementById('includeMaintenance').checked;
+            const sortBy = document.getElementById('sortBy').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+            
+            // Verificar se os campos obrigatórios estão preenchidos
+            if (!sortBy || !sortOrder) {
+                alert(getTranslation('search-validation') || 'Por favor, selecione uma métrica para ordenar e a ordem desejada.');
+                return;
+            }
+            
+            // Filtrar projetos
+            let filteredProjects = Object.values(projectsData);
+            
+            // Aplicar filtros
+            if (!includeFinalized && !includeMaintenance) {
+                // Apenas projetos ativos (não finalizados e não em manutenção)
+                filteredProjects = filteredProjects.filter(p => p.status === 'Ativo' && !isProjectInMaintenance(p));
+            } else if (!includeFinalized && includeMaintenance) {
+                // Projetos ativos (incluindo manutenção, mas não finalizados)
+                filteredProjects = filteredProjects.filter(p => p.status === 'Ativo');
+            } else if (includeFinalized && !includeMaintenance) {
+                // Todos os projetos, mas excluir os em manutenção
+                filteredProjects = filteredProjects.filter(p => !isProjectInMaintenance(p));
+            }
+            // Se ambos estão marcados, mostra todos os projetos (não precisa filtrar)
+            
+            // Aplicar ordenação
+            filteredProjects.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(sortBy) {
+                    case 'network':
+                        valueA = a.network || 'ZZZ'; // Networks sem nome vão para o final
+                        valueB = b.network || 'ZZZ';
+                        // Para strings, usar localeCompare
+                        if (sortOrder === 'asc') {
+                            return valueA.localeCompare(valueB);
+                        } else {
+                            return valueB.localeCompare(valueA);
+                        }
+                    case 'diasRestantes':
+                        valueA = a.diasRestantes || 999999; // Projetos sem data vão para o final
+                        valueB = b.diasRestantes || 999999;
+                        break;
+                    case 'tvl':
+                        valueA = parseValorDinheiroParaNumero(a.tvl) || 0;
+                        valueB = parseValorDinheiroParaNumero(b.tvl) || 0;
+                        break;
+                    case 'fdv':
+                        valueA = parseValorDinheiroParaNumero(a.fdv) || 0;
+                        valueB = parseValorDinheiroParaNumero(b.fdv) || 0;
+                        break;
+                    case 'valorAirdrop':
+                        valueA = parseValorDinheiroParaNumero(a.valorAirdrop) || 0;
+                        valueB = parseValorDinheiroParaNumero(b.valorAirdrop) || 0;
+                        break;
+                    default:
+                        valueA = a.network || 'ZZZ';
+                        valueB = b.network || 'ZZZ';
+                        if (sortOrder === 'asc') {
+                            return valueA.localeCompare(valueB);
+                        } else {
+                            return valueB.localeCompare(valueA);
+                        }
+                }
+                
+                if (sortOrder === 'asc') {
+                    return valueA - valueB;
+                } else {
+                    return valueB - valueA;
+                }
+            });
+            
+            // Pegar apenas os 6 melhores
+            const topProjects = filteredProjects.slice(0, 6);
+            
+            // Atualizar a seção de oportunidades
+            updateOpportunitiesSection(topProjects);
+            
+            // Feedback visual do botão
+            const searchButton = document.getElementById('searchButton');
+            const originalText = searchButton.innerHTML;
+            searchButton.innerHTML = '<span class="mr-2">✅</span><span>Atualizado!</span>';
+            searchButton.classList.add('bg-green-500', 'hover:bg-green-600');
+            searchButton.classList.remove('bg-gradient-to-r', 'from-cyan-500', 'to-blue-500', 'hover:from-cyan-600', 'hover:to-blue-600');
+            
+            setTimeout(() => {
+                searchButton.innerHTML = originalText;
+                searchButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+                searchButton.classList.add('bg-gradient-to-r', 'from-cyan-500', 'to-blue-500', 'hover:from-cyan-600', 'hover:to-blue-600');
+            }, 2000);
+        }
+        
+        // Função para atualizar a seção de oportunidades
+        function updateOpportunitiesSection(projects) {
+            // Top 3 por valor - APENAS projetos ATIVOS (não finalizados)
+            const topByValue = projects
+                .filter(p => p.status === 'Ativo') // Apenas projetos ativos, sem finalizados
+                .sort((a, b) => {
+                    const valueA = parseValorDinheiroParaNumero(a.valorAirdrop) || 0;
+                    const valueB = parseValorDinheiroParaNumero(b.valorAirdrop) || 0;
+                    return valueB - valueA;
+                })
+                .slice(0, 3);
+            
+            // Top 3 por tempo - APENAS projetos ATIVOS (não finalizados)
+            const topByTime = projects
+                .filter(p => p.status === 'Ativo' && p.diasRestantes && p.diasRestantes > 0) // Apenas projetos ativos, sem finalizados
+                .sort((a, b) => {
+                    const daysA = a.diasRestantes || 0;
+                    const daysB = b.diasRestantes || 0;
+                    return daysB - daysA;
+                })
+                .slice(0, 3);
+            
+            // Top 3 mais novos (últimos da planilha) - SEM FILTRO DE STATUS
+            const topNewest = projects
+                .sort((a, b) => {
+                    return b.ordemPlanilha - a.ordemPlanilha;
+                })
+                .slice(0, 3);
+            
+            const containerValue = document.getElementById('topAirdropsGrid');
+            const containerTime = document.getElementById('topTimeProjectsGrid');
+            const containerNewest = document.getElementById('topNewestProjectsGrid');
+            
+            containerValue.innerHTML = topByValue.map(project => createProjectCard(project)).join('');
+            containerTime.innerHTML = topByTime.map(project => createProjectCard(project)).join('');
+            containerNewest.innerHTML = topNewest.map(project => createProjectCard(project)).join('');
+            
+            // Scroll suave para a primeira seção
+            const opportunitiesSection = containerValue.closest('.mb-8');
+            opportunitiesSection.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Adicionar efeito de destaque em todas as seções
+            [containerValue, containerTime, containerNewest].forEach(container => {
+                container.style.transform = 'scale(0.95)';
+                container.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    container.style.transform = 'scale(1)';
+                    container.style.opacity = '1';
+                    container.style.transition = 'all 0.3s ease';
+                }, 100);
+            });
+        }
+
+        // Função para carregar scripts dinamicamente
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Verificar autenticação
+        async function checkAuth() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainContent = document.getElementById('mainContent');
+
+            try {
+                // Carregar Supabase
+                await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js');
+
+                if (!window.supabase) {
+                    throw new Error('Supabase não carregou');
+                }
+
+                // Inicializar cliente
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                // Verificar sessão
+                const { data: { session }, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (!session) {
+                    // Usuário não está logado
+                    window.location.href = '../auth.html';
+                    return;
+                }
+
+                // Usuário está logado - configurar interface
+                setupUserInterface(session.user);
+
+                // Mostrar conteúdo principal
+                /*setTimeout(() => {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                        initializeVisualEffects();
+                    }, 500);
+                }, 1000);*/
+
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                window.location.href = '../auth.html';
+            }
+        }
+
+        // Configurar interface do usuário
+        function setupUserInterface(user) {
+            const email = user.email || 'usuário';
+            const userName = user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                email.split('@')[0];
+            const initial = userName.charAt(0).toUpperCase();
+
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = initial;
+        }
+
+        // Logo loading function
+        function loadLogo() {
+            const logoImg = document.querySelector('.logo-img');
+            if (logoImg) {
+                // Try to load the logo, fallback to placeholder if not found
+                logoImg.onerror = function() {
+                    // If logo fails to load, create a placeholder
+                    this.style.background = 'linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1))';
+                    this.style.border = '2px solid rgba(0, 255, 255, 0.4)';
+                    this.style.display = 'flex';
+                    this.style.alignItems = 'center';
+                    this.style.justifyContent = 'center';
+                    this.style.fontSize = '1.2rem';
+                    this.style.fontWeight = 'bold';
+                    this.style.color = 'rgba(0, 255, 255, 0.8)';
+                    this.innerHTML = 'IC';
+                    this.removeAttribute('src');
+                };
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth()
+            currentUser = {
+                name: 'Usuário Intus',
+                method: 'direct'
+            };
+
+            // Load logo
+            loadLogo();
+
+            obterPlanilhaGoogle().then(projects => {
+                projectsData = projects;
+                loadProjects();
+                loadDashboard();
+            })
+        });
+
+        async function obterPlanilhaGoogle() {
+            const url = "https://docs.google.com/spreadsheets/d/1y5JqWZ_kCbw9-FGt8tiIV-2djfughCjZvx4pv_PXxVc/export?format=csv";
+
+            let projectDatas = {};
+
+            try {
+                const response = await fetch(url); // 'Bloqueia' a função até obter resposta
+                const csvText = await response.text();
+
+                // Usando PapaParse para converter o CSV em array de arrays
+                const resultado = Papa.parse(csvText, {
+                    header: false,   // não leia o cabeçalho automaticamente; vamos ignorar manualmente a linha 0 como antes
+                    skipEmptyLines: true
+                });
+
+                const rows = resultado.data;
+
+                for (let i = 1; i < rows.length; i++) { // começa em 1 para pular header
+                    let colunas = rows[i];
+
+                    let airdrop = colunas[0];
+                    let observacoes = colunas[1];
+                    let consulta = colunas[2];
+                    let season = parseInt(colunas[3]);
+                    let network = colunas[4];
+                    let dataAtualizacao = colunas[5];
+                    let diasAtualizacao = colunas[6];
+                    let finalSeason = colunas[7];
+                    let diasRestantes = parseInt(colunas[8]);
+                    let totalSupply = parseValorDinheiroParaNumero(colunas[9]);
+                    let alocacaoPercent = colunas[10];
+                    let airdropSupply = parseValorDinheiroParaNumero(colunas[11]);
+                    let tvl = parseValorDinheiroParaNumero(colunas[12]);
+                    let fdv = parseValorDinheiroParaNumero(colunas[13]);
+                    let valorAirdrop = parseValorDinheiroParaNumero(parseValorDinheiroParaNumero(colunas[14]));
+                    let token = parseValorDinheiroParaNumero(colunas[15]);
+                    let valorToken = parseValorDinheiroParaNumero(colunas[16]);
+
+                    let aproximado_custoPorPts = parseValorDinheiroParaNumero(colunas[17])
+                    let aproximado_ptsPorToken = parseValorDinheiroParaNumero(colunas[18])
+                    let aproximado_ptsAtuais = parseValorDinheiroParaNumero(colunas[19])
+                    let aproximado_mediaDiaria = parseValorDinheiroParaNumero(colunas[20])
+                    let aproximado_ptsTotais = parseValorDinheiroParaNumero(colunas[21])
+
+                    let conservador_custoPorPts = parseValorDinheiroParaNumero(colunas[22])
+                    let conservador_ptsPorToken = parseValorDinheiroParaNumero(colunas[23])
+                    let conservador_ptsAtuais = parseValorDinheiroParaNumero(colunas[19])
+                    let conservador_mediaDiaria = parseValorDinheiroParaNumero(colunas[24])
+                    let conservador_ptsTotais = parseValorDinheiroParaNumero(colunas[25])
+
+                    projectDatas[airdrop] = {
+                        name: airdrop,
+                        network: network,
+                        season: season,
+                        status: airdrop.includes('(END)') ? 'Inativo' : 'Ativo',
+                        observacoes: observacoes,
+                        consulta: consulta,
+                        dataAtualizacao: dataAtualizacao,
+                        diasAtualizacao: diasAtualizacao,
+                        finalSeason: finalSeason,
+                        diasRestantes: diasRestantes,
+                        totalSupply: totalSupply,
+                        alocacaoPercent: alocacaoPercent,
+                        airdropSupply: airdropSupply,
+                        tvl: tvl,
+                        fdv: fdv,
+                        valorAirdrop: valorAirdrop,
+                        token: token,
+                        valorToken: valorToken,
+                        ordemPlanilha: i, // Índice da linha na planilha para identificar os mais recentes
+                        conservador: {
+                            custoPorPts: conservador_custoPorPts,
+                            ptsPorToken: conservador_ptsPorToken,
+                            ptsAtuais: conservador_ptsAtuais,
+                            mediaDiaria: conservador_mediaDiaria,
+                            ptsTotal: conservador_ptsTotais
+                        },
+                        aproximado: {
+                            custoPorPts: aproximado_custoPorPts,
+                            ptsPorToken: aproximado_ptsPorToken,
+                            ptsAtuais: aproximado_ptsAtuais,
+                            mediaDiaria: aproximado_mediaDiaria,
+                            ptsTotal: aproximado_ptsTotais
+                        }
+                    };
+                }
+
+            } catch (error) {
+                console.error('Erro ao buscar a planilha:', error);
+            }
+
+            return projectDatas;
+        }
+    </script>
+    <!-- <script src="../protection.js"></script> -->
+</body>
+</html>

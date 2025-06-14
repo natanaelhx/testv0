@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - INTUS CRIPTO</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at center, #0a0f1c 0%, #050810 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Holographic background grid */
+        .holo-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            filter: blur(1px);
+            z-index: -1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* Mouse follower effect */
+        .mouse-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 0.1s ease;
+            border-radius: 50%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .logo-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #6600ff) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: subtract;
+            animation: logoRotate 10s linear infinite;
+        }
+
+        .logo-ring::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #6600ff);
+            filter: blur(10px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            object-fit: cover;
+        }
+
+        .logo-img[src$=".svg"] {
+            background: transparent;
+            border: none;
+        }
+
+        .logo-img:not([src]),
+        .logo-img[src=""],
+        .logo-img[src*="sua-logo-aqui"] {
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border: 2px solid rgba(0, 255, 255, 0.4);
+        }
+
+        .logo-img:not([src])::after,
+        .logo-img[src=""]::after,
+        .logo-img[src*="sua-logo-aqui"]::after {
+            content: 'IC';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: rgba(0, 255, 255, 0.8);
+        }
+
+        .logo-container:hover .logo-img {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .brand-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.9rem;
+            color: rgba(0, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.05), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+
+        .auth-container:hover::before {
+            left: 100%;
+        }
+
+        .auth-container:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 
+                0 20px 40px rgba(0, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Loading indicator */
+        .loading-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 255, 0.2);
+            border-top: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Manual Login Form */
+        .manual-form {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #00ffff, #0099ff);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .form-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #0099ff, #6600ff);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .form-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-toggle {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .form-toggle a {
+            color: rgba(0, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .form-toggle a:hover {
+            color: #00ffff;
+            text-decoration: underline;
+        }
+
+        /* Message container */
+        .message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .message.error {
+            background: rgba(255, 99, 99, 0.1);
+            border: 1px solid rgba(255, 99, 99, 0.3);
+            color: #ff9999;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 99, 0.1);
+            border: 1px solid rgba(0, 255, 99, 0.3);
+            color: #00ff99;
+        }
+
+        .message.info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: rgba(0, 255, 255, 0.9);
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer a {
+            color: rgba(0, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .auth-container {
+                padding: 2rem;
+            }
+            
+            .brand-title {
+                font-size: 1.8rem;
+            }
+            
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .logo-img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .animate-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="holo-grid"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+    
+    <div class="container">
+        <div class="logo-section animate-in">
+            <div class="logo-container">
+                <div class="logo-ring"></div>
+                <img src="intus_logo.svg" alt="Intus Cripto Logo" class="logo-img">
+            </div>
+            <h1 class="brand-title">INTUS CRIPTO</h1>
+            <p class="brand-subtitle">Ferramentas Avançadas para DeFi</p>
+            <p class="auth-subtitle">Acesse sua conta</p>
+        </div>
+
+        <div class="auth-container animate-in">
+            <!-- Loading -->
+            <div id="loading" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p class="loading-text" id="loadingText">Carregando sistema...</p>
+            </div>
+
+            <!-- Manual Form -->
+            <div id="manualForm" class="manual-form">
+                <div id="messageContainer"></div>
+
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                    </div>
+                    
+                    <button class="form-btn" id="loginBtn">
+                        <span id="loginBtnText">Entrar</span>
+                    </button>
+                    
+                    <div class="form-toggle">
+                        <a id="showSignup">Não tem conta? Crie uma aqui</a>
+                    </div>
+                    
+                    <div class="form-toggle" style="margin-top: 0.5rem;">
+                        <a id="showForgotPassword">Esqueceu sua senha?</a>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupForm" class="hidden">
+                    <div class="form-group">
+                        <label for="signupEmail">E-mail</label>
+                        <input type="email" id="signupEmail" placeholder="seu@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPassword">Senha</label>
+                        <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPasswordConfirm">Confirmar Senha</label>
+                        <input type="password" id="signupPasswordConfirm" placeholder="Confirme sua senha" required>
+                    </div>
+                    
+                    <button class="form-btn" id="signupBtn">
+                        <span id="signupBtnText">Criar Conta</span>
+                    </button>
+                    
+                    <div class="form-toggle">
+                        <a id="showLogin">Já tem conta? Entre aqui</a>
+                    </div>
+                </div>
+
+                <!-- Forgot Password Form -->
+                <div id="forgotPasswordForm" class="hidden">
+                    <div class="form-group">
+                        <label for="resetEmail">E-mail</label>
+                        <input type="email" id="resetEmail" placeholder="seu@email.com" required>
+                    </div>
+                    
+                    <button class="form-btn" id="resetBtn">
+                        <span id="resetBtnText">Enviar Link de Recuperação</span>
+                    </button>
+                    
+                    <div class="form-toggle">
+                        <a id="backToLogin">Voltar para login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by <a href="https://diegointuscripto.com.br/">Diego Intus</a>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO DO SUPABASE
+        const SUPABASE_URL = 'https://kjkfyiqcvspsyyqcvqut.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtqa2Z5aXFjdnNwc3l5cWN2cXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1MDIxOTIsImV4cCI6MjA2NTA3ODE5Mn0.AUqq-m3CH5GLbezINTyex0zAoxf2Fuvy5uXJIOKGGZE';
+        
+        let supabase = null;
+
+        // Elementos DOM
+        const loading = document.getElementById('loading');
+        const manualForm = document.getElementById('manualForm');
+        const loadingText = document.getElementById('loadingText');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // Formulários
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+
+        // Elementos de login
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginBtnText = document.getElementById('loginBtnText');
+
+        // Elementos de cadastro
+        const signupEmail = document.getElementById('signupEmail');
+        const signupPassword = document.getElementById('signupPassword');
+        const signupPasswordConfirm = document.getElementById('signupPasswordConfirm');
+        const signupBtn = document.getElementById('signupBtn');
+        const signupBtnText = document.getElementById('signupBtnText');
+
+        // Elementos de reset
+        const resetEmail = document.getElementById('resetEmail');
+        const resetBtn = document.getElementById('resetBtn');
+        const resetBtnText = document.getElementById('resetBtnText');
+
+        // Navegação entre formulários
+        const showSignup = document.getElementById('showSignup');
+        const showLogin = document.getElementById('showLogin');
+        const showForgotPassword = document.getElementById('showForgotPassword');
+        const backToLogin = document.getElementById('backToLogin');
+
+        // Mostrar mensagem
+        function showMessage(message, type = 'info') {
+            messageContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+        }
+
+        // Limpar mensagem
+        function clearMessage() {
+            messageContainer.innerHTML = '';
+        }
+
+        // Alternar formulários
+        function showFormSection(section) {
+            loginForm.classList.add('hidden');
+            signupForm.classList.add('hidden');
+            forgotPasswordForm.classList.add('hidden');
+            
+            section.classList.remove('hidden');
+            clearMessage();
+        }
+
+        // Event listeners para navegação
+        showSignup.addEventListener('click', () => showFormSection(signupForm));
+        showLogin.addEventListener('click', () => showFormSection(loginForm));
+        showForgotPassword.addEventListener('click', () => showFormSection(forgotPasswordForm));
+        backToLogin.addEventListener('click', () => showFormSection(loginForm));
+
+        // Inicializar Supabase
+        async function initializeSupabase() {
+            try {
+                loadingText.textContent = 'Conectando ao servidor...';
+                
+                // Tentar carregar Supabase via CDN
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+                
+                script.onload = async () => {
+                    try {
+                        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        
+                        // Verificar se já está logado
+                        const { data: { session } } = await supabase.auth.getSession();
+                        
+                        if (session) {
+                            loadingText.textContent = 'Usuário já logado! Redirecionando...';
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1500);
+                        } else {
+                            // Mostrar formulário manual
+                            showManualForm();
+                        }
+                        
+                        // Setup listener
+                        setupAuthListener();
+                        
+                    } catch (error) {
+                        console.error('Erro ao inicializar Supabase:', error);
+                        showManualForm();
+                    }
+                };
+                
+                script.onerror = () => {
+                    console.error('Erro ao carregar Supabase');
+                    showManualForm();
+                };
+                
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                console.error('Erro geral:', error);
+                showManualForm();
+            }
+        }
+
+        // Mostrar formulário manual
+        function showManualForm() {
+            loading.classList.add('hidden');
+            manualForm.style.display = 'block';
+        }
+
+        // Escutar mudanças de autenticação
+        function setupAuthListener() {
+            if (!supabase) return;
+            
+            supabase.auth.onAuthStateChange((event, session) => {
+                console.log('Auth state changed:', event, session);
+                
+                if (event === 'SIGNED_IN' && session) {
+                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }
+            });
+        }
+
+        // Fazer login
+        async function handleLogin() {
+            if (!supabase) {
+                showMessage('Sistema não disponível. Tente recarregar a página.', 'error');
+                return;
+            }
+
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+
+            if (!email || !password) {
+                showMessage('Preencha todos os campos.', 'error');
+                return;
+            }
+
+            try {
+                loginBtn.disabled = true;
+                loginBtnText.textContent = 'Entrando...';
+                clearMessage();
+
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showMessage('Login realizado! Redirecionando...', 'success');
+
+            } catch (error) {
+                console.error('Erro no login:', error);
+                
+                let errorMessage = 'Erro ao fazer login.';
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'E-mail ou senha incorretos.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'Confirme seu e-mail antes de fazer login.';
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtnText.textContent = 'Entrar';
+            }
+        }
+
+        // Fazer cadastro
+        async function handleSignup() {
+            if (!supabase) {
+                showMessage('Sistema não disponível. Tente recarregar a página.', 'error');
+                return;
+            }
+
+            const email = signupEmail.value.trim();
+            const password = signupPassword.value;
+            const passwordConfirm = signupPasswordConfirm.value;
+
+            if (!email || !password || !passwordConfirm) {
+                showMessage('Preencha todos os campos.', 'error');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showMessage('As senhas não coincidem.', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+
+            try {
+                signupBtn.disabled = true;
+                signupBtnText.textContent = 'Criando conta...';
+                clearMessage();
+
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        emailRedirectTo: `${window.location.origin}/confirm.html`
+                    }
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showMessage('Conta criada! Verifique seu e-mail para confirmar. O link irá direcioná-lo para nossa página de confirmação personalizada.', 'success');
+                
+                // Voltar para login após 5 segundos
+                setTimeout(() => {
+                    showFormSection(loginForm);
+                }, 5000);
+
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                
+                let errorMessage = 'Erro ao criar conta.';
+                if (error.message.includes('already registered')) {
+                    errorMessage = 'Este e-mail já está registrado.';
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                signupBtn.disabled = false;
+                signupBtnText.textContent = 'Criar Conta';
+            }
+        }
+
+        // Reset de senha
+        async function handlePasswordReset() {
+            if (!supabase) {
+                showMessage('Sistema não disponível. Tente recarregar a página.', 'error');
+                return;
+            }
+
+            const email = resetEmail.value.trim();
+
+            if (!email) {
+                showMessage('Digite seu e-mail.', 'error');
+                return;
+            }
+
+            try {
+                resetBtn.disabled = true;
+                resetBtnText.textContent = 'Enviando...';
+                clearMessage();
+
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/auth.html`
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showMessage('Link de recuperação enviado! Verifique seu e-mail. O link irá direcioná-lo de volta para esta página.', 'success');
+
+            } catch (error) {
+                console.error('Erro no reset:', error);
+                showMessage('Erro ao enviar link de recuperação.', 'error');
+            } finally {
+                resetBtn.disabled = false;
+                resetBtnText.textContent = 'Enviar Link de Recuperação';
+            }
+        }
+
+        // Event listeners para formulários
+        loginBtn.addEventListener('click', handleLogin);
+        signupBtn.addEventListener('click', handleSignup);
+        resetBtn.addEventListener('click', handlePasswordReset);
+
+        // Enter key handling
+        loginPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        signupPasswordConfirm.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSignup();
+        });
+
+        resetEmail.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handlePasswordReset();
+        });
+
+        // Inicializar efeitos visuais
+        function initializeVisualEffects() {
+            // Mouse follower effect
+            const mouseGlow = document.getElementById('mouseGlow');
+            let mouseX = 0, mouseY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                mouseGlow.style.transform = `translate(${mouseX - 150}px, ${mouseY - 150}px)`;
+            });
+
+            // Create floating orbs
+            function createOrbs() {
+                for (let i = 0; i < 5; i++) {
+                    const orb = document.createElement('div');
+                    orb.className = 'orb';
+                    
+                    const size = Math.random() * 100 + 50;
+                    orb.style.width = size + 'px';
+                    orb.style.height = size + 'px';
+                    orb.style.left = Math.random() * window.innerWidth + 'px';
+                    orb.style.top = Math.random() * window.innerHeight + 'px';
+                    orb.style.animationDelay = Math.random() * 8 + 's';
+                    
+                    document.body.appendChild(orb);
+                }
+            }
+
+            createOrbs();
+        }
+
+        // Inicializar animações
+        function initializeAnimations() {
+            const animatedElements = document.querySelectorAll('.animate-in');
+            animatedElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 300);
+            });
+        }
+
+        // Inicializar quando carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeVisualEffects();
+            initializeAnimations();
+            
+            // Aguardar um pouco e inicializar
+            setTimeout(() => {
+                initializeSupabase();
+            }, 1000);
+        });
+    </script>
+    <script src="protection.js"></script>
+</body>
+</html>

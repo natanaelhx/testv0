@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Confirmado - INTUS CRIPTO</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at center, #0a0f1c 0%, #050810 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Holographic background grid */
+        .holo-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            filter: blur(1px);
+            z-index: -1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* Mouse follower effect */
+        .mouse-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 0.1s ease;
+            border-radius: 50%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .logo-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #6600ff) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: subtract;
+            animation: logoRotate 10s linear infinite;
+        }
+
+        .logo-ring::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #6600ff);
+            filter: blur(10px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            object-fit: cover;
+        }
+
+        .logo-img[src$=".svg"] {
+            background: transparent;
+            border: none;
+        }
+
+        .logo-img:not([src]),
+        .logo-img[src=""],
+        .logo-img[src*="sua-logo-aqui"] {
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border: 2px solid rgba(0, 255, 255, 0.4);
+        }
+
+        .logo-img:not([src])::after,
+        .logo-img[src=""]::after,
+        .logo-img[src*="sua-logo-aqui"]::after {
+            content: 'IC';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgba(0, 255, 255, 0.8);
+        }
+
+        .logo-container:hover .logo-img {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ffff, #0099ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .brand-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        /* Success Container */
+        .success-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 99, 0.3);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 20px 40px rgba(0, 255, 99, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .success-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 99, 0.05), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+            animation: successGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes successGlow {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+
+        .success-container:hover {
+            border-color: rgba(0, 255, 99, 0.5);
+            transform: translateY(-5px);
+        }
+
+        /* Success Icon */
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: #00ff99;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 99, 0.4));
+            animation: successPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Success Title */
+        .success-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff99, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Success Message */
+        .success-message {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        .success-highlight {
+            color: #00ff99;
+            font-weight: 600;
+        }
+
+        /* Redirect Section */
+        .redirect-section {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .redirect-title {
+            font-size: 1.2rem;
+            color: #00ffff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .redirect-message {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* Countdown */
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .countdown {
+            background: linear-gradient(45deg, #00ffff, #0099ff);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: countdownPulse 1s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        @keyframes countdownPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+        }
+
+        .countdown-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 255, 0.2);
+            border-top: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Manual Link */
+        .manual-link {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .manual-link a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .manual-link a:hover {
+            color: #ffffff;
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer a {
+            color: rgba(0, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .success-container {
+                padding: 2.5rem 2rem;
+            }
+            
+            .brand-title {
+                font-size: 2.2rem;
+            }
+            
+            .success-title {
+                font-size: 1.8rem;
+            }
+            
+            .logo-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .success-icon {
+                font-size: 4rem;
+            }
+            
+            .countdown {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .animate-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="holo-grid"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+    
+    <div class="container">
+        <div class="logo-section animate-in">
+            <div class="logo-container">
+                <div class="logo-ring"></div>
+                <!-- Logo configurada para: intus_logo.svg -->
+                <img src="intus_logo.svg" alt="Intus Cripto Logo" class="logo-img">
+            </div>
+            <h1 class="brand-title">INTUS CRIPTO</h1>
+            <p class="brand-subtitle">Ferramentas Avançadas para DeFi</p>
+        </div>
+
+        <div class="success-container animate-in">
+            <!-- Success Icon -->
+            <div class="success-icon">✅</div>
+            
+            <!-- Success Title -->
+            <h2 class="success-title">Cadastro Confirmado!</h2>
+            
+            <!-- Success Message -->
+            <div class="success-message">
+                <strong class="success-highlight">Parabéns!</strong> Sua conta foi <strong class="success-highlight">ativada com sucesso</strong>.<br>
+                Agora você tem acesso completo a todas as ferramentas DeFi da plataforma.
+            </div>
+            
+            <!-- Redirect Section -->
+            <div class="redirect-section">
+                <div class="redirect-title">
+                    <span>🚀</span>
+                    <span>Preparando seu acesso...</span>
+                </div>
+                
+                <div class="redirect-message">
+                    Você será redirecionado para a página de login em instantes.
+                </div>
+                
+                <!-- Countdown -->
+                <div class="countdown-container">
+                    <div class="countdown" id="countdown">5</div>
+                    <div>
+                        <div class="loading-spinner"></div>
+                        <div class="countdown-label">segundos</div>
+                    </div>
+                </div>
+                
+                <!-- Manual Link -->
+                <div class="manual-link">
+                    Não foi redirecionado?<br>
+                    <a href="auth.html" id="manualLink">Clique aqui para fazer login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by <a href="https://diegointuscripto.com.br/">Diego Intus</a>
+    </div>
+
+    <script>
+        // Elementos DOM
+        const countdownElement = document.getElementById('countdown');
+        const manualLink = document.getElementById('manualLink');
+        
+        let countdown = 5;
+        let redirectTimer;
+
+        // Inicializar efeitos visuais
+        function initializeVisualEffects() {
+            // Mouse follower effect
+            const mouseGlow = document.getElementById('mouseGlow');
+            let mouseX = 0, mouseY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                mouseGlow.style.transform = `translate(${mouseX - 150}px, ${mouseY - 150}px)`;
+            });
+
+            // Create floating orbs
+            function createOrbs() {
+                for (let i = 0; i < 5; i++) {
+                    const orb = document.createElement('div');
+                    orb.className = 'orb';
+                    
+                    const size = Math.random() * 100 + 50;
+                    orb.style.width = size + 'px';
+                    orb.style.height = size + 'px';
+                    orb.style.left = Math.random() * window.innerWidth + 'px';
+                    orb.style.top = Math.random() * window.innerHeight + 'px';
+                    orb.style.animationDelay = Math.random() * 8 + 's';
+                    
+                    document.body.appendChild(orb);
+                }
+            }
+
+            createOrbs();
+        }
+
+        // Inicializar animações
+        function initializeAnimations() {
+            // Stagger animations
+            const animatedElements = document.querySelectorAll('.animate-in');
+            animatedElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 300);
+            });
+        }
+
+        // Iniciar countdown
+        function startCountdown() {
+            redirectTimer = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(redirectTimer);
+                    redirectToLogin();
+                }
+            }, 1000);
+        }
+
+        // Redirecionar para login
+        function redirectToLogin() {
+            // Adicionar efeito visual de redirecionamento
+            countdownElement.textContent = '🚀';
+            
+            // Adicionar classe para animação de saída
+            document.querySelector('.success-container').style.transform = 'translateY(-20px)';
+            document.querySelector('.success-container').style.opacity = '0.8';
+            
+            // Redirecionar após breve delay
+            setTimeout(() => {
+                window.location.href = 'auth.html';
+            }, 500);
+        }
+
+        // Parar countdown se usuário interagir
+        function stopCountdown() {
+            if (redirectTimer) {
+                clearInterval(redirectTimer);
+                countdownElement.textContent = '⏸️';
+                
+                // Mudar mensagem
+                document.querySelector('.redirect-message').innerHTML = 
+                    'Redirecionamento pausado. <a href="auth.html" style="color: #00ffff;">Clique aqui para continuar</a>.';
+            }
+        }
+
+        // Event listeners
+        manualLink.addEventListener('click', stopCountdown);
+        
+        // Parar countdown se usuário clicar em qualquer lugar
+        document.addEventListener('click', (e) => {
+            if (e.target !== manualLink && !manualLink.contains(e.target)) {
+                // Não parar se clicou no link manual
+                return;
+            }
+        });
+
+        // Parar countdown ao pressionar qualquer tecla
+        document.addEventListener('keydown', stopCountdown);
+
+        // Detectar se veio de confirmação de email
+        function checkConfirmationSource() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const source = urlParams.get('source');
+            
+            if (source === 'email_confirmation') {
+                // Veio de confirmação de email, iniciar countdown
+                startCountdown();
+            } else {
+                // Acesso direto, não iniciar countdown automático
+                countdownElement.textContent = '▶️';
+                document.querySelector('.redirect-message').innerHTML = 
+                    'Pronto para fazer login? <a href="auth.html" style="color: #00ffff;">Clique aqui</a>.';
+            }
+        }
+
+        // Inicializar quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeVisualEffects();
+            initializeAnimations();
+            
+            // Aguardar animações carregarem
+            setTimeout(() => {
+                checkConfirmationSource();
+            }, 1000);
+        });
+        
+        // Limpeza ao sair da página
+        window.addEventListener('beforeunload', () => {
+            if (redirectTimer) {
+                clearInterval(redirectTimer);
+            }
+        });
+    </script>
+    <script src="protection.js"></script>
+</body>
+</html>
